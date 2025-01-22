@@ -1,538 +1,740 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="html template">
-    <meta name="keywords" content="HTML, CSS, JavaScript">
-    <meta name="author" content="Asad">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>AI METALLURGIST - AI Artificial Tntelligence & AI METALLURGIST</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="assets/images/favicon.png">
-    <link rel="apple-touch-icon" href="assets/images/favicon.png">
-    <link rel="stylesheet" href="assets/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
-    <link rel="stylesheet" href="assets/css/meanmenu.css">
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <link rel="stylesheet" href="assets/css/nice-select.css">
-    <link rel="stylesheet" href="assets/css/backtotop.css">
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
-
+    <meta name="description" content="AI Metallurgist - Advanced chatbot for metallurgy consulting and steel industry expertise">
+    <meta name="keywords" content="AI Metallurgist, metallurgy, steel industry, chat interface, metal consulting">
+    <meta name="author" content="Thirupathy Bright">
+    <meta property="og:title" content="AI Metallurgist Chat Interface">
+    <meta property="og:description" content="Get expert metallurgy consultation through our AI-powered chat interface">
+    <meta property="og:image" content="images/Floating Robot-Photoroom.png">
+    <meta property="og:url" content="https://thirupathybright.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://thirupathybright.com/chat">
     
+    <title>AI Metallurgist - Expert Metallurgy Consultation</title>
     
-</head>
-
-<body>
-
-    <!-- Cursor start -->
-    <div class="rts-cursor cursor-outer" data-default="yes" data-link="yes" data-slider="no">
-        <span class="fn-cursor"></span>
-    </div>
-    <div class="rts-cursor cursor-inner" data-default="yes" data-link="yes" data-slider="no">
-        <span class="fn-cursor">
-        <span class="fn-left"></span>
-        <span class="fn-right"></span>
-        </span>
-    </div>
-    <!-- Cursor end -->
-
-    <!-- back to top start -->
-    <div class="progress-wrap">
-        <div class="progress-circle">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-        </div>
-    </div>
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Stylesheets -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
-        .progress-wrap {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100px; /* Adjust as needed */
-            height: 100px; /* Adjust as needed */
-            border-radius: 50%;
-            background: #f0f0f0; /* Optional background */
+        /* Base styles */
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2d2d2d;
+            --accent-color: #8B4000;
+            --accent-hover: #A0522D;
+            --text-primary: #ffffff;
+            --text-secondary: #e5e7eb;
+            --border-color: #333;
         }
-    
-        .progress-circle i {
-            font-size: 48px; /* Icon size */
-            color: #007bff; /* Icon color */
+
+        /* Core styles */
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sliding Menu */
+        .sliding-menu {
+            position: fixed;
+            left: -280px;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--secondary-bg);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+        }
+
+        .sliding-menu.active {
+            transform: translateX(280px);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation styles */
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-link:hover, .menu-link:focus {
+            background-color: rgba(255,255,255,0.1);
+            border-left-color: var(--accent-color);
+        }
+
+        .menu-link i {
+            width: 24px;
+            margin-right: 12px;
+        }
+
+        /* Chat interface styles */
+        .chat-container {
+            background-color: var(--primary-bg);
+            scroll-behavior: smooth;
+        }
+
+        .chat-bubble {
+            position: relative;
+            padding: 1rem;
+            border-radius: 1rem;
+            max-width: 80%;
+            animation: bubbleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .user-bubble {
+            background-color: var(--accent-color);
+            margin-left: auto;
+            margin-right: 1rem;
+        }
+
+        .assistant-bubble {
+            background-color: var(--secondary-bg);
+            margin-left: 1rem;
+        }
+
+        /* Input area styles */
+        .input-container {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            transition: border-color 0.2s ease;
+        }
+
+        .input-container:focus-within {
+            border-color: var(--accent-color);
+        }
+
+        /* Button styles */
+        .feature-button {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .feature-button:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .send-button {
+            background-color: var(--accent-color);
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Animations */
+        @keyframes bubbleIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Loading indicator */
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        /* Scrollbar styling */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 0 1rem !important;
+            }
+
+            .chat-bubble {
+                max-width: 90%;
+            }
+
+            .sliding-menu {
+                width: 250px;
+                left: -250px;
+            }
+
+            .sliding-menu.active {
+                transform: translateX(250px);
+            }
+
+            .top-bar span:not(.mobile-visible) {
+                display: none;
+            }
+
+            .input-container {
+                margin: 0 0.5rem;
+            }
+        }
+
+        /* Accessibility improvements */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Print styles */
+        @media print {
+            .sliding-menu,
+            .input-container,
+            .feature-button,
+            .send-button {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .chat-bubble {
+                border: 1px solid #ccc;
+                break-inside: avoid;
+            }
         }
     </style>
-        
-    <!-- back to top end -->
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="visually-hidden focus:not-visually-hidden">
+        Skip to main content
+    </a>
 
-    <!-- sidebar-information-area-start -->
-    <div class="sidebar-info side-info">
-        <div class="sidebar-logo-wrapper mb-25">
-            <div class="row align-items-center">
-                <div class="col-xl-6 col-8">
-                    <div class="sidebar-logo">
-                        <a href="index.html"><img src="assets/images/logo/logo-w.png" alt="logo-img"></a>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-4">
-                    <div class="sidebar-close-wrapper text-end">
-                        <button class="sidebar-close side-info-close"><i class="fal fa-times"></i></button>
-                    </div>
-                </div>
+    <!-- Sliding Menu -->
+    <nav class="sliding-menu" aria-label="Main navigation">
+        <div class="p-4 border-b border-gray-600">
+            <h2 class="text-xl font-bold flex items-center">
+                <img src="images/Floating Robot-Photoroom.png" alt="" class="w-8 h-8 mr-2" aria-hidden="true">
+                Menu
+            </h2>
+        </div>
+        <div class="py-4">
+            <a href="home.html" class="menu-link" aria-label="Go to home page">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                <span>Home</span>
+            </a>
+            <a href="/contact" class="menu-link" aria-label="Contact us">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                <span>Contact</span>
+            </a>
+            <a href="/about" class="menu-link" aria-label="About AI Metallurgist">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <span>About</span>
+            </a>
+            <a href="/services" class="menu-link" aria-label="Our services">
+                <i class="fas fa-cogs" aria-hidden="true"></i>
+                <span>Services</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" aria-hidden="true"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-bar p-2 flex items-center space-x-4 bg-secondary-bg border-b border-border-color">
+        <div class="flex items-center space-x-2">
+            <button class="p-2 feature-button rounded" aria-label="Toggle menu">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <img src="images/Floating Robot-Photoroom.png" alt="AI Metallurgist Logo" class="w-8 h-8 rounded-full">
+                <span class="text-sm mobile-visible">AI Metallurgist</span>
             </div>
         </div>
-        <div class="sidebar-menu-wrapper fix">
-            <div class="mobile-menu"></div>
+        <div class="flex-grow"></div>
+        <div class="flex items-center space-x-2">
+            <button class="p-2 feature-button rounded" id="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+            </button>
+            <button class="p-2 feature-button rounded" id="fullscreen-toggle" aria-label="Toggle fullscreen">
+                <i class="fas fa-expand" aria-hidden="true"></i>
+            </button>
         </div>
-    </div>
-    <div class="offcanvas-overlay"></div>
-    <!-- sidebar-information-area-end -->
+    </header>
 
-    <div class="has-smooth" id="has_smooth"></div>
+    <!-- Main Content Area -->
+    <main id="main-content" class="flex-grow flex flex-col h-[calc(100vh-120px)]">
+        <!-- Chat Messages -->
+        <section class="flex-grow overflow-y-auto custom-scrollbar p-4" id="chat-container" style="padding: 0 10vw;">
+            <div class="flex justify-center mb-8">
+                <div class="text-center">
+                    <img src="images/Floating Robot-Photoroom.png" 
+                         alt="AI Metallurgist Chat Logo" 
+                         class="w-20 h-20 mx-auto mb-4"
+                         loading="lazy">
+                    <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
+                    <p class="text-gray-400">AI THIRUPATHYBRIGHT.COM</p>
+                </div>
+            </div>
+        </section>
 
-    <div id="smooth-wrapper">
-        <div id="smooth-content">
-            <div class="body-wrapper">
-                <header class="h2_header-area header-sticky">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-xl-2 col-lg-2 col-6">
-                                <div class="h2_header-logo d-flex" >
-                                    <a href="index.html" style="display: flex; align-items: center;"><img style="max-width: 33%;" src="assets/images/logo/logo.png" alt="Image Not Found"><h1 style="font-size:70%; margin: auto;">METALLURGIST</h1></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-7 col-lg-7 text-center d-none d-lg-block">
-                                <div class="h2_header-menu d-none d-lg-flex justify-content-center">
-                                    <nav class="h2_header-nav-menu" id="mobile-menu">
-                                        <ul>
-                                            <li class="menu-has-child">
-                                                <a href="index.html">Home</a>
-                                          
-                                            </li>
-                                            <li><a href="about.html">About</a></li>
-                                         
-                                          
-                                        
-                                            <li><a href="contact.html">Contact</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-6">
-                                <div class="h2_header-action-wrap d-flex align-items-center justify-content-end">
-                                    <div class="h2_header-action d-none d-sm-flex">
-                                        <a href="#" class="h2_header-action-login">
-                                            <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M7.01172 8C8.94472 8 10.5117 6.433 10.5117 4.5C10.5117 2.567 8.94472 1 7.01172 1C5.07872 1 3.51172 2.567 3.51172 4.5C3.51172 6.433 5.07872 8 7.01172 8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M13.026 15C13.026 12.291 10.331 10.1 7.013 10.1C3.695 10.1 1 12.291 1 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            Login                                           
-                                        </a>
-                                       
-                                    </div>
-                                    <div class="header-menu-bar d-lg-none ml-10">
-                                        <span class="header-menu-bar-icon side-toggle">
-                                            <i class="fa-light fa-bars"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Input Area -->
+        <footer class="p-4">
+            <form id="chat-form" class="relative">
+                <div class="input-container rounded-lg flex items-center p-2">
+                    <label for="message-input" class="visually-hidden">Type your message</label>
+                    <input type="text" 
+                           id="message-input"
+                           class="flex-grow bg-transparent outline-none px-3 py-2"
+                           placeholder="Ask AI Metallurgist..."
+                           autocomplete="off"
+                           aria-label="Chat message">
+                    
+                    <div class="flex items-center space-x-2 px-2">
+                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Format text">
+                            <i class="fas fa-palette" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Change language">
+                            <i class="fas fa-globe" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Upload image">
+                            <i class="fas fa-image" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" 
+                                id="clear-button"
+                                class="feature-button p-2 rounded text-gray-400 hover:text-white"
+                                aria-label="Clear input">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                        <button type="submit" 
+                                class="send-button p-2 px-4 rounded text-white ml-2"
+                                aria-label="Send message">
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        </button>
                     </div>
-                </header>
+                </div>
+            </form>
+        </footer>
+    </main>
 
-                <main>
-                    <!-- banner area start -->
-                    <section class="h2_banner-area">
-                        <div class="h2_banner-single bg-default" data-background="assets/images/banner/home2/bg.jpg">
-                            <div class="container">
-                                <div class="h2_banner-content">
-                                    <span class="h2_banner-content-subtitle tp_subtitle_anim">👋  Welcome to AI Metallurgist </span>
-                                    <h1 class="h2_banner-content-title tp_has_text_reveal_anim">Your Expert AI Guide for Steel Grades and Properties</h1>
-                                    <p class="tp_fade_bottom">Get instant answers about steel grades, mechanical properties, chemical composition, and application recommendations. Let our AI assist you in selecting the perfect steel grade for your needs</p>
-                                </div>
-                                <div class="h2_banner-bottom">
-                                    <img src="assets/images/banner/home2/form_shape.png" alt="" class="h2_banner-bottom-shape tp_fade_right">
-                                    <div class="h2_banner-form tp_fade_bottom">
-                                        <h5 class="h2_banner-form-title">Ask about any steel grade or property</h5>
-                                        <form id="searchForm" onsubmit="handleSubmit(event)">
-                                            <input type="text" id="searchInput" placeholder="Start with a detailed description">
-                                            <button type="submit">Ask AI</button>
-                                        </form>
-                                        <script>
-                                         function handleSubmit(event) {
-    event.preventDefault();
-    const searchValue = document.getElementById('searchInput').value.trim();
-    if (searchValue) {
-        const encodedValue = encodeURIComponent(searchValue);
-        window.location.href = `chat.html?q=${encodedValue}`;
-    }
-}
-                                            </script>
-                                            
-                                            <!-- In chat.html, add this script after the existing scripts -->
-                                            <script>
-                                            window.addEventListener('DOMContentLoaded', () => {
-                                                // Get the query parameter
-                                                const urlParams = new URLSearchParams(window.location.search);
-                                                const searchQuery = urlParams.get('q');
-                                                
-                                                if (searchQuery) {
-                                                    // Decode the search value
-                                                    const decodedQuery = decodeURIComponent(searchQuery);
-                                                    // Set the input value
-                                                    const messageInput = document.getElementById('user-message');
-                                                    if (messageInput) {
-                                                        messageInput.value = decodedQuery;
-                                                        // Optional: Automatically submit the form
-                                                        const form = document.getElementById('inquiry-form');
-                                                        if (form) {
-                                                            form.dispatchEvent(new Event('submit'));
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                            </script>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="h2_banner-shape">
-                            <img src="assets/images/banner/home2/shape-1.png" alt="Image Not Found" class="h2_banner-shape-1" data-speed="0.8">
-                            <img src="assets/images/banner/home2/shape-2.png" alt="Image Not Found" class="h2_banner-shape-2" data-speed="0.7">
-                            <img src="assets/images/banner/home2/shape-3.png" alt="Image Not Found" class="h2_banner-shape-3" data-speed="0.9">
-                            <img src="assets/images/banner/home2/shape-4.png" alt="Image Not Found" class="h2_banner-shape-4" data-speed="0.8">
-                            <img src="assets/images/banner/home2/shape-5.png" alt="Image Not Found" class="h2_banner-shape-5">
-                        </div>
-                    </section>
-                    <!-- banner area end -->
-
-                    <!-- brand area start -->
-                    <section class="h2_brand-area pb-140 pt-135">
-                        <div class="container">
-                            <div class="row justify-content-center">
-                                <div class="col-xxl-8 col-xl-9 col-lg-9">
-                                    <div class="h2_section-area text-center mb-50">
-                                        <span class="h2_section-subtitle tp_subtitle_anim">Our Client</span>
-                                        <h2 class="h2_section-title tp_title_slideup mb-0">15,000+ </h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="h2_brand-wrap">
-                                <div class="h2_brand-item tp_fade_bottom">
-                                    <img src="assets/images/brand/1.png" alt="Image Not Found">
-                                </div>
-                                <div class="h2_brand-item tp_fade_bottom">
-                                    <img src="assets/images/brand/2.png" alt="Image Not Found">
-                                </div>
-                                <div class="h2_brand-item tp_fade_bottom">
-                                    <img src="assets/images/brand/3.png" alt="Image Not Found">
-                                </div>
-
-                                <div class="h2_brand-item tp_fade_bottom">
-                                    <img src="assets/images/brand/4.png" alt="Image Not Found">
-                                </div>
-                                <div class="h2_brand-item tp_fade_bottom">
-                                    <img src="assets/images/brand/5.png" alt="Image Not Found">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- brand area end -->
-
-                    <!-- about area start -->
-                    <section class="h2_about-area pb-100">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-xl-6 col-lg-6">
-                                    <div class="h2_about-img mb-40">
-                                        <img src="assets/images/about/home2/bg.png" alt="Image Not Found" class="inner-img-1 tp_fade_right">
-                                        <img src="assets/images/about/home2/bg-2.png" alt="Image Not Found" class="inner-img-2 tp_fade_bottom">
-                                        <img src="assets/images/about/home2/shape.png" alt="Image Not Found" class="inner-img-shape">
-                                    </div>
-                                </div>
-                             
-                                        <div class="col-xl-6 col-lg-6">
-                                            <div class="h2_about-content mb-40">
-                                                <div class="h2_section-area mb-40">
-                                                    <span class="h2_section-subtitle tp_subtitle_anim">Why Choose AI Metallurgist?</span>
-                                                    <h2 class="h2_section-title tp_title_slideup mb-25">Expert Steel Knowledge at Your Fingertips</h2>
-                                                    <p class="h2_section-text tp_fade_bottom">Our AI system combines extensive metallurgical knowledge with advanced machine learning to provide accurate, instant information about:</p>
-                                                    <ul class="h2_work-content-list tp_fade_bottom">
-                                                        <li>Steel grade specifications and alternatives</li>
-                                                        <li>Mechanical and physical properties</li>
-                                                        <li>Chemical composition ranges</li>
-                                                        <li>Heat treatment recommendations</li>
-                                                        <li>Application suitability analysis</li>
-                                                    </ul>
-                                                </div>
-                                                <a href="#" class="theme-btn-2 tp_fade_bottom">Start Exploring</a>
-                                            </div>
-                                        </div>
-                                  
-                            </div>
-                        </div>
-                    </section>
-                    <!-- about area end -->
-
-                
-                    <!-- work area end -->
-                    <section class="h2_work-area bg-default pt-140 pb-140">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-xl-12">
-                                    <div class="h2_section-area text-center mb-50">
-                                        <span class="h2_section-subtitle tp_subtitle_anim">Key Features</span>
-                                        <h2 class="h2_section-title tp_title_slideup">Comprehensive Steel Analysis</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="h2_work-bottom pt-80">
-                                <div class="h2_work-item h2_work-item-1">
-                                    <div class="h2_work-item-icon">
-                                        <i class="fa fa-solid fa-microscope"></i>
-                                    </div>
-                                    <div class="h2_work-item-info">
-                                        <span>Material Properties Analysis</span>
-                                    </div>
-                                </div>
-                                <div class="h2_work-item h2_work-item-2">
-                                    <div class="h2_work-item-icon">
-                                        <i class="fa-solid fa-flask"></i>
-                                    </div>
-                                    <div class="h2_work-item-info">
-                                        <span>Chemical Composition</span>
-                                    </div>
-                                </div>
-                                <div class="h2_work-item h2_work-item-3">
-                                    <div class="h2_work-item-icon">
-                                        <i class="fa-solid fa-gear"></i>
-                                    </div>
-                                    <div class="h2_work-item-info">
-                                        <span>Application Recommendations</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- testimonial area start -->
-                    <section class="h2_testimonial-area pb-95 pt-135">
-                        <div class="container">
-                            <div class="row justify-content-center">
-                                <div class="col-xl-6">
-                                    <div class="h2_section-area text-center">
-                                        <span class="h2_section-subtitle tp_subtitle_anim">Testimonials</span>
-                                        <h2 class="h2_section-title tp_title_slideup mb-0">Trusted by 1000+ companies</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="h2_testimonial-active swiper pb-40 pt-50 tp_fade_bottom">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <div class="h2_testimonial-item">
-                                                    <div class="h2_testimonial-icon">
-                                                        <svg width="48" height="36" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <g opacity="0.06">
-                                                            <path d="M28.6981 18.7847L46.3344 34.5144C46.9789 35.0893 48 34.6318 48 33.7682V1C48 0.447715 47.5523 0 47 0H29.3637C28.8114 0 28.3637 0.447714 28.3637 0.999998V18.0384C28.3637 18.3235 28.4854 18.595 28.6981 18.7847Z" fill="currentColor"/>
-                                                            <path d="M0.336773 18.7847L17.9731 34.5144C18.6176 35.0893 19.6387 34.6318 19.6387 33.7682V1C19.6387 0.447715 19.191 0 18.6387 0H1.00239C0.450104 0 0.00238991 0.447714 0.00238991 0.999998V18.0384C0.00238991 18.3235 0.124039 18.595 0.336773 18.7847Z" fill="currentColor"/>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="h2_testimonial-head">
-                                                        <div class="h2_testimonial-head-img">
-                                                            <img src="assets/images/testimonial/1.png" alt="Image Not Found">
-                                                        </div>
-                                                        <div class="h2_testimonial-head-info">
-                                                            <h6>Hanson Deck</h6>
-                                                            <span>Blogger</span>
-                                                        </div>
-                                                    </div>
-                                                    <ul class="h2_testimonial-rating">
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-thin fa-star"></i></li>
-                                                    </ul>
-                                                    <p>Maecenas eget ullamcorper dolor placerat ipsum. Aliquam dictum massa eu libero vehicula, id dapibus ligula vulputate. Donec arcu elit</p>
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <div class="h2_testimonial-item">
-                                                    <div class="h2_testimonial-icon">
-                                                        <svg width="48" height="36" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <g opacity="0.06">
-                                                            <path d="M28.6981 18.7847L46.3344 34.5144C46.9789 35.0893 48 34.6318 48 33.7682V1C48 0.447715 47.5523 0 47 0H29.3637C28.8114 0 28.3637 0.447714 28.3637 0.999998V18.0384C28.3637 18.3235 28.4854 18.595 28.6981 18.7847Z" fill="currentColor"/>
-                                                            <path d="M0.336773 18.7847L17.9731 34.5144C18.6176 35.0893 19.6387 34.6318 19.6387 33.7682V1C19.6387 0.447715 19.191 0 18.6387 0H1.00239C0.450104 0 0.00238991 0.447714 0.00238991 0.999998V18.0384C0.00238991 18.3235 0.124039 18.595 0.336773 18.7847Z" fill="currentColor"/>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="h2_testimonial-head">
-                                                        <div class="h2_testimonial-head-img">
-                                                            <img src="assets/images/testimonial/2.png" alt="Image Not Found">
-                                                        </div>
-                                                        <div class="h2_testimonial-head-info">
-                                                            <h6>Nigel Nigel</h6>
-                                                            <span>President of Sales</span>
-                                                        </div>
-                                                    </div>
-                                                    <ul class="h2_testimonial-rating">
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-thin fa-star"></i></li>
-                                                    </ul>
-                                                    <p>Maecenas eget ullamcorper dolor placerat ipsum. Aliquam dictum massa eu libero vehicula, id dapibus ligula vulputate. Donec arcu elit</p>
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <div class="h2_testimonial-item">
-                                                    <div class="h2_testimonial-icon">
-                                                        <svg width="48" height="36" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <g opacity="0.06">
-                                                            <path d="M28.6981 18.7847L46.3344 34.5144C46.9789 35.0893 48 34.6318 48 33.7682V1C48 0.447715 47.5523 0 47 0H29.3637C28.8114 0 28.3637 0.447714 28.3637 0.999998V18.0384C28.3637 18.3235 28.4854 18.595 28.6981 18.7847Z" fill="currentColor"/>
-                                                            <path d="M0.336773 18.7847L17.9731 34.5144C18.6176 35.0893 19.6387 34.6318 19.6387 33.7682V1C19.6387 0.447715 19.191 0 18.6387 0H1.00239C0.450104 0 0.00238991 0.447714 0.00238991 0.999998V18.0384C0.00238991 18.3235 0.124039 18.595 0.336773 18.7847Z" fill="currentColor"/>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="h2_testimonial-head">
-                                                        <div class="h2_testimonial-head-img">
-                                                            <img src="assets/images/testimonial/3.png" alt="Image Not Found">
-                                                        </div>
-                                                        <div class="h2_testimonial-head-info">
-                                                            <h6>Max Conversion</h6>
-                                                            <span>SEO Contain Writer</span>
-                                                        </div>
-                                                    </div>
-                                                    <ul class="h2_testimonial-rating">
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-thin fa-star"></i></li>
-                                                    </ul>
-                                                    <p>Maecenas eget ullamcorper dolor placerat ipsum. Aliquam dictum massa eu libero vehicula, id dapibus ligula vulputate. Donec arcu elit</p>
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <div class="h2_testimonial-item">
-                                                    <div class="h2_testimonial-icon">
-                                                        <svg width="48" height="36" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <g opacity="0.06">
-                                                            <path d="M28.6981 18.7847L46.3344 34.5144C46.9789 35.0893 48 34.6318 48 33.7682V1C48 0.447715 47.5523 0 47 0H29.3637C28.8114 0 28.3637 0.447714 28.3637 0.999998V18.0384C28.3637 18.3235 28.4854 18.595 28.6981 18.7847Z" fill="currentColor"/>
-                                                            <path d="M0.336773 18.7847L17.9731 34.5144C18.6176 35.0893 19.6387 34.6318 19.6387 33.7682V1C19.6387 0.447715 19.191 0 18.6387 0H1.00239C0.450104 0 0.00238991 0.447714 0.00238991 0.999998V18.0384C0.00238991 18.3235 0.124039 18.595 0.336773 18.7847Z" fill="currentColor"/>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="h2_testimonial-head">
-                                                        <div class="h2_testimonial-head-img">
-                                                            <img src="assets/images/testimonial/4.png" alt="Image Not Found">
-                                                        </div>
-                                                        <div class="h2_testimonial-head-info">
-                                                            <h6>Nathaneal Down</h6>
-                                                            <span>Blogger</span>
-                                                        </div>
-                                                    </div>
-                                                    <ul class="h2_testimonial-rating">
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-solid fa-star"></i></li>
-                                                        <li><i class="fa-thin fa-star"></i></li>
-                                                    </ul>
-                                                    <p>Maecenas eget ullamcorper dolor placerat ipsum. Aliquam dictum massa eu libero vehicula, id dapibus ligula vulputate. Donec arcu elit</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="h2_testimonial-pagination pt-55 text-center"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- testimonial area end -->
-
-                 
-                 
-
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-labelledby="modal-title">
+        <div class="bg-gray-800 p-6 rounded-lg w-96 shadow-xl">
+            <h2 id="modal-title" class="text-xl text-white mb-4">Authentication Required</h2>
             
-                    <!-- instagram area end -->
-                </main>
-
-                <!-- footer area start -->
-                <footer class="h2_footer-area">
-                    <div class="h2_footer-top pt-130 pb-135 bg-default" data-background="assets/images/footer/home2/bg.jpg">
-                        <div class="container">
-                            <div class="row justify-content-between">
-                                <div class="col-12">
-                                    <div class="h2_footer-top-content">
-                                        <h2 class="h2_footer-top-title tp_fade_bottom">How Can We Help You?</h2>
-                                        <form action="#" class="tp_fade_bottom">
-                                            <input type="email" placeholder="Enter Your Email Address">
-                                            <button type="submit">Subscribe</button>
-                                        </form>
-                                        <div class="h2_footer-top-condition tp_fade_bottom">
-                                            <label class="condition-checkbox">
-                                                I agree to the <a href="#">Privacy Policy.</a>
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="h2_footer-shape">
-                            <img src="assets/images/footer/home2/shape-1.png" alt="" class="h2_footer-shape-1" data-speed="0.8">
-                            <img src="assets/images/footer/home2/shape-2.png" alt="" class="h2_footer-shape-2" data-speed="0.8">
-                            <img src="assets/images/footer/home2/shape-3.png" alt="" class="h2_footer-shape-3" data-speed="0.8">
-                            <img src="assets/images/footer/home2/shape-4.png" alt="" class="h2_footer-shape-4" data-speed="0.8">
-                        </div>
-                    </div>
-                    <div class="h2_footer-bottom">
-                        <div class="container">
-                            <div class="row justify-content-sm-between align-items-center justify-content-center">
-                                <div class="col-xl-4 col-lg-5 col-md-12 order-3 order-lg-0 tp_fade_bottom_footer">
-                                    <div class="h2_footer-bottom-copyright text-center text-lg-start">
-                                        <p>&copy; 2023 AI METALLURGIST All Rights Reserved by site</p>
-                                    </div>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-sm-6 col-auto tp_fade_bottom_footer">
-                                    <div class="h2_footer-bottom-logo mb-10 mb-lg-0">
-                                        <a href="index.html"><img src="assets/images/logo/logo-w.png" alt="Image Not Found"></a>
-                                    </div>
-                                </div>
-                              
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-                <!-- footer area end -->
-
+            <!-- Email/Phone Form -->
+            <div id="auth-form">
+                <div class="mb-4">
+                    <label for="auth-email" class="block text-sm mb-2">Email</label>
+                    <input type="email" 
+                           id="auth-email" 
+                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
+                           placeholder="Enter your email"
+                           required>
+                </div>
+                <div class="mb-4">
+                    <label for="auth-phone" class="block text-sm mb-2">Phone</label>
+                    <input type="tel" 
+                           id="auth-phone" 
+                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
+                           placeholder="Enter your phone number"
+                           required>
+                </div>
+                <button id="send-otp-btn" 
+                        class="w-full bg-accent-color hover:bg-accent-hover text-white p-2 rounded transition-colors">
+                    Send OTP
+                </button>
+            </div>
+            
+            <!-- OTP Form -->
+            <div id="otp-form" class="hidden">
+                <div class="mb-4">
+                    <label for="auth-otp" class="block text-sm mb-2">OTP</label>
+                    <input type="text" 
+                           id="auth-otp" 
+                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
+                           placeholder="Enter OTP code"
+                           maxlength="6"
+                           required>
+                </div>
+                <button id="verify-otp-btn" 
+                        class="w-full bg-accent-color hover:bg-accent-hover text-white p-2 rounded transition-colors">
+                    Verify OTP
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
+    <script>
+        // Constants
+        const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
+        const AUTH_URL = 'https://thirupathybright.in/chatbot/api/auth/verify/';
+        const OTP_URL = 'https://thirupathybright.in/chatbot/api/auth/verify-otp/';
 
-    <!-- jQuery Js -->
-    <script src="assets/js/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/swiper-bundle.min.js"></script>
-    <script src="assets/js/meanmenu.min.js"></script>
-    <script src="assets/js/gsap.min.js"></script>
-    <script src="assets/js/ScrollSmoother.min.js"></script>
-    <script src="assets/js/ScrollTrigger.min.js"></script>
-    <script src="assets/js/TweenMax.min.js"></script>
-    <script src="assets/js/SplitText.min.js"></script>
-    <script src="assets/js/chroma.min.js"></script>
-    <script src="assets/js/magnific-popup.min.js"></script>
-    <script src="assets/js/nice-select.min.js"></script>
-    <script src="assets/js/backtotop.js"></script>
-    <script src="assets/js/main.js"></script>
+        // Initialize chat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatHistory();
+            initializeChat();
+            initializeMenuHandlers();
+            document.getElementById('message-input').focus();
+        });
 
+        function initializeMenuHandlers() {
+            const menuBtn = document.querySelector('.fa-bars').parentElement;
+            const slidingMenu = document.querySelector('.sliding-menu');
+            const overlay = document.querySelector('.menu-overlay');
+
+            menuBtn.addEventListener('click', () => {
+                slidingMenu.classList.toggle('active');
+                overlay.classList.toggle('active');
+                if (slidingMenu.classList.contains('active')) {
+                    menuBtn.setAttribute('aria-expanded', 'true');
+                } else {
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            overlay.addEventListener('click', closeMenu);
+
+            // Close menu when pressing Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && slidingMenu.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+
+            // Handle menu link clicks
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            function closeMenu() {
+                slidingMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                menuBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        function initializeChat() {
+            const messages = getChatHistory();
+            if (messages.length === 0) {
+                addMessage('assistant', "Welcome! I'm AI METALLURGIST. How can I help you today?");
+            }
+        }
+
+        function getChatHistory() {
+            return JSON.parse(localStorage.getItem('chatHistory') || '[]');
+        }
+
+        function addMessage(role, content, save = true) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${role}-bubble chat-bubble mb-4`;
+            messageDiv.setAttribute('role', 'log');
+            messageDiv.setAttribute('aria-label', `${role} message`);
+            messageDiv.innerHTML = `<p>${sanitizeHTML(content)}</p>`;
+            chatContainer.appendChild(messageDiv);
+            
+            // Smooth scroll to bottom
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            if (save) {
+                const messages = getChatHistory();
+                messages.push({ role, content, timestamp: new Date().toISOString() });
+                localStorage.setItem('chatHistory', JSON.stringify(messages));
+                localStorage.setItem('messageCount', messages.length.toString());
+            }
+        }
+
+        function loadChatHistory() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML = `
+                <div class="flex justify-center mb-8">
+                    <div class="text-center">
+                        <img src="images/Floating Robot-Photoroom.png" 
+                             alt="AI Metallurgist Logo" 
+                             class="w-20 h-20 mx-auto mb-4"
+                             loading="lazy">
+                        <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
+                        <p class="text-gray-400">AI THIRUPATHYBRIGHT.COM</p>
+                    </div>
+                </div>
+            `;
+            const messages = getChatHistory();
+            messages.forEach(msg => {
+                addMessage(msg.role, msg.content, false);
+            });
+        }
+
+        // Form submission handler
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Remove query parameters from URL
+            if (window.location.search) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+            
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messageCount = parseInt(localStorage.getItem('messageCount') || '0');
+            const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+
+            if (!isAuthenticated && messageCount >= 2) {
+                document.getElementById('auth-modal').classList.remove('hidden');
+                localStorage.setItem('pendingMessage', message);
+                return;
+            }
+
+            input.value = '';
+            await sendMessage(message);
+        });
+
+        async function sendMessage(message) {
+            addMessage('user', message);
+
+            // Show typing indicator
+            const chatContainer = document.getElementById('chat-container');
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.className = 'assistant-bubble chat-bubble mb-4';
+            typingIndicator.innerHTML = `
+                <div class="typing-indicator" role="status" aria-label="AI is typing">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                typingIndicator.remove();
+                
+                if (data.status === 'success') {
+                    addMessage('assistant', data.response);
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.remove();
+                addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
+            }
+        }
+
+        // Clear button handler
+        document.getElementById('clear-button').addEventListener('click', () => {
+            const input = document.getElementById('message-input');
+            input.value = '';
+            input.focus();
+        });
+
+        // Fullscreen toggle handler
+        document.getElementById('fullscreen-toggle').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // Authentication handlers
+        document.getElementById('send-otp-btn').addEventListener('click', async () => {
+            const email = document.getElementById('auth-email').value;
+            const phone = document.getElementById('auth-phone').value;
+            
+            try {
+                const response = await fetch(AUTH_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, phone })
+                });
+
+                if (response.ok) {
+                    document.getElementById('auth-form').classList.add('hidden');
+                    document.getElementById('otp-form').classList.remove('hidden');
+                    document.getElementById('modal-title').textContent = 'Enter OTP';
+                    document.getElementById('auth-otp').focus();
+                } else {
+                    throw new Error('Failed to send OTP');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send OTP. Please try again.');
+            }
+        });
+
+        document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+            const email = document.getElementById('auth-email').value;
+            const otp = document.getElementById('auth-otp').value;
+            const phone = document.getElementById('auth-phone').value;
+            
+            try {
+                const response = await fetch(OTP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, phone })
+                });
+
+                if (response.ok) {
+                    localStorage.setItem('isAuthenticated', 'true');
+                    document.getElementById('auth-modal').classList.add('hidden');
+                    
+                    const pendingMessage = localStorage.getItem('pendingMessage');
+                    if (pendingMessage) {
+                        localStorage.removeItem('pendingMessage');
+                        sendMessage(pendingMessage);
+                    }
+                } else {
+                    throw new Error('Invalid OTP');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Invalid OTP. Please try again.');
+            }
+        });
+
+        // URL parameter handling
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('q');
+            
+            if (searchQuery) {
+                const decodedQuery = decodeURIComponent(searchQuery);
+                const messageInput = document.getElementById('message-input');
+                if (messageInput) {
+                    messageInput.value = decodedQuery;
+                    const form = document.getElementById('chat-form');
+                    if (form) {
+                        form.dispatchEvent(new Event('submit'));
+                    }
+                }
+            }
+        });
+
+        // Security: Sanitize HTML to prevent XSS
+        function sanitizeHTML(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Accessibility: Handle keyboard navigation in menu
+        function handleMenuKeyboardNav() {
+            const menuLinks = document.querySelectorAll('.menu-link');
+            menuLinks.forEach((link, index) => {
+                link.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' && index < menuLinks.length - 1) {
+                        e.preventDefault();
+                        menuLinks[index + 1].focus();
+                    } else if (e.key === 'ArrowUp' && index > 0) {
+                        e.preventDefault();
+                        menuLinks[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        // Initialize keyboard navigation
+        handleMenuKeyboardNav();
+    </script>
 </body>
-
 </html>
