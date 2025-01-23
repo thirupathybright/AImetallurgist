@@ -449,13 +449,16 @@
         </div>
     </div>
 
-<!-- Auth Modal -->
+
+
+    <script>
+        const authModalHTML = `
 <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-gray-800 p-6 rounded-lg w-96 shadow-xl">
         <h2 id="modal-title" class="text-xl text-white mb-4 font-bold">Verify your not a bot🤖</h2>
         
         <!-- Email/Phone Form -->
-        <div id="auth-form">
+        <form id="auth-form" onsubmit="return false;">
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
                 <input type="email" 
@@ -471,30 +474,151 @@
                        placeholder="Enter your phone number" 
                        class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
             </div>
-            <button id="send-otp-btn" class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
+            <button type="submit" 
+                    id="send-otp-btn" 
+                    class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
                 <span class="btn-text">Send OTP</span>
-                <div class="loading-spinner hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="loading-spinner hidden"></div>
             </button>
-        </div>
+        </form>
         
         <!-- OTP Form -->
-        <div id="otp-form" class="hidden">
+        <form id="otp-form" class="hidden">
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-300 mb-1">Enter OTP</label>
                 <input type="text" 
                        id="auth-otp" 
+                       required
                        placeholder="Enter OTP code" 
                        class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
             </div>
-            <button id="verify-otp-btn" class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
+            <button type="submit"
+                    id="verify-otp-btn" 
+                    class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
                 <span class="btn-text">Verify OTP</span>
-                <div class="loading-spinner hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="loading-spinner hidden"></div>
             </button>
-        </div>
+        </form>
     </div>
-</div>
+</div>`;
 
-    <script>
+// Replace existing modal with new one
+document.body.insertAdjacentHTML('beforeend', authModalHTML);
+
+// Updated Authentication handlers
+document.getElementById('auth-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('Send OTP form submitted'); // Debug log
+    
+    const button = document.getElementById('send-otp-btn');
+    const email = document.getElementById('auth-email').value.trim();
+    const phone = document.getElementById('auth-phone').value.trim();
+    
+    // Validate email
+    if (!email) {
+        alert('Email is required');
+        return;
+    }
+    
+    // Show loading state
+    button.classList.add('btn-loading');
+    button.querySelector('.loading-spinner').classList.remove('hidden');
+    button.disabled = true;
+    
+    try {
+        console.log('Sending OTP request to:', AUTH_URL); // Debug log
+        const response = await fetch(AUTH_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email, phone })
+        });
+
+        console.log('OTP Response status:', response.status); // Debug log
+        const responseData = await response.json();
+        console.log('OTP Response data:', responseData); // Debug log
+
+        if (response.ok) {
+            alert('OTP sent successfully to your email');
+            document.getElementById('auth-form').classList.add('hidden');
+            document.getElementById('otp-form').classList.remove('hidden');
+            document.getElementById('modal-title').textContent = 'Enter OTP';
+            document.getElementById('auth-otp').focus();
+        } else {
+            throw new Error(responseData.error || 'Failed to send OTP');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send OTP. Please try again.');
+    } finally {
+        // Remove loading state
+        button.classList.remove('btn-loading');
+        button.querySelector('.loading-spinner').classList.add('hidden');
+        button.disabled = false;
+    }
+});
+
+// Handle OTP verification
+document.getElementById('otp-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('Verify OTP form submitted'); // Debug log
+    
+    const button = document.getElementById('verify-otp-btn');
+    const email = document.getElementById('auth-email').value.trim();
+    const otp = document.getElementById('auth-otp').value.trim();
+    const phone = document.getElementById('auth-phone').value.trim();
+    
+    if (!otp) {
+        alert('Please enter the OTP');
+        return;
+    }
+    
+    // Show loading state
+    button.classList.add('btn-loading');
+    button.querySelector('.loading-spinner').classList.remove('hidden');
+    button.disabled = true;
+    
+    try {
+        console.log('Verifying OTP...'); // Debug log
+        const response = await fetch(OTP_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email, otp, phone })
+        });
+
+        console.log('Verify response status:', response.status); // Debug log
+        const responseData = await response.json();
+        console.log('Verify response data:', responseData); // Debug log
+
+        if (response.ok) {
+            localStorage.setItem('isAuthenticated', 'true');
+            document.getElementById('auth-modal').classList.add('hidden');
+            
+            const pendingMessage = localStorage.getItem('pendingMessage');
+            if (pendingMessage) {
+                localStorage.removeItem('pendingMessage');
+                sendMessage(pendingMessage);
+            }
+            
+            alert('Successfully verified!');
+        } else {
+            throw new Error(responseData.error || 'Invalid OTP');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Invalid OTP. Please try again.');
+    } finally {
+        // Remove loading state
+        button.classList.remove('btn-loading');
+        button.querySelector('.loading-spinner').classList.add('hidden');
+        button.disabled = false;
+    }
+});
     // Mobile Detection
     const isMobile = window.matchMedia("(max-width: 1024px)").matches;
     
@@ -735,10 +859,18 @@ document.getElementById('fullscreen-toggle').addEventListener('click', () => {
     }
 });
 // Authentication handlers
-document.getElementById('send-otp-btn').addEventListener('click', async () => {
+document.getElementById('send-otp-btn').addEventListener('click', async (e) => {
+    e.preventDefault(); // Prevent any default form submission
+    
     const button = document.getElementById('send-otp-btn');
     const email = document.getElementById('auth-email').value;
     const phone = document.getElementById('auth-phone').value;
+    
+    // Validate email
+    if (!email) {
+        alert('Email is required');
+        return;
+    }
     
     // Show loading state
     button.classList.add('btn-loading');
@@ -748,20 +880,33 @@ document.getElementById('send-otp-btn').addEventListener('click', async () => {
     try {
         const response = await fetch(AUTH_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, phone })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+                email: email.trim(), 
+                phone: phone.trim() 
+            })
         });
 
+        console.log('OTP Response status:', response.status);
+        const responseData = await response.json();
+        console.log('OTP Response data:', responseData);
+
         if (response.ok) {
+            // Show success message
+            alert('OTP sent successfully to your email');
             document.getElementById('auth-form').classList.add('hidden');
             document.getElementById('otp-form').classList.remove('hidden');
             document.getElementById('modal-title').textContent = 'Enter OTP';
+            document.getElementById('auth-otp').focus();
         } else {
-            throw new Error('Failed to send OTP ');
+            throw new Error(responseData.error || 'Failed to send OTP');
         }
     } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to send OTP Email ID REQUIRED');
+        console.error('Error sending OTP:', error);
+        alert(error.message || 'Failed to send OTP. Please try again.');
     } finally {
         // Remove loading state
         button.classList.remove('btn-loading');
@@ -770,11 +915,19 @@ document.getElementById('send-otp-btn').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+document.getElementById('verify-otp-btn').addEventListener('click', async (e) => {
+    e.preventDefault(); // Prevent any default form submission
+    
     const button = document.getElementById('verify-otp-btn');
     const email = document.getElementById('auth-email').value;
     const otp = document.getElementById('auth-otp').value;
     const phone = document.getElementById('auth-phone').value;
+    
+    // Validate OTP
+    if (!otp) {
+        alert('Please enter the OTP');
+        return;
+    }
     
     // Show loading state
     button.classList.add('btn-loading');
@@ -784,25 +937,39 @@ document.getElementById('verify-otp-btn').addEventListener('click', async () => 
     try {
         const response = await fetch(OTP_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, otp, phone })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+                email: email.trim(), 
+                otp: otp.trim(), 
+                phone: phone.trim() 
+            })
         });
+
+        console.log('Verify OTP Response status:', response.status);
+        const responseData = await response.json();
+        console.log('Verify OTP Response data:', responseData);
 
         if (response.ok) {
             localStorage.setItem('isAuthenticated', 'true');
             document.getElementById('auth-modal').classList.add('hidden');
             
+            // Handle pending message if exists
             const pendingMessage = localStorage.getItem('pendingMessage');
             if (pendingMessage) {
                 localStorage.removeItem('pendingMessage');
                 sendMessage(pendingMessage);
             }
+            
+            alert('Successfully verified!');
         } else {
-            throw new Error('Invalid OTP');
+            throw new Error(responseData.error || 'Invalid OTP');
         }
     } catch (error) {
-        console.error('Error:', error);
-        alert('Invalid OTP');
+        console.error('Error verifying OTP:', error);
+        alert(error.message || 'Invalid OTP. Please try again.');
     } finally {
         // Remove loading state
         button.classList.remove('btn-loading');
@@ -810,7 +977,6 @@ document.getElementById('verify-otp-btn').addEventListener('click', async () => 
         button.disabled = false;
     }
 });
-
 // URL parameter handling
 window.addEventListener('DOMContentLoaded', () => {
     // Get the query parameter
