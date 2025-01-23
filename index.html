@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium AI Metallurgist</title>
     <script src="https://cdn.tailwindcss.com"></script>
-   
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #1a1a1a;
@@ -569,18 +568,18 @@
     const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
         const AUTH_URL = 'https://thirupathybright.in/chatbot/api/auth/verify/';
         const OTP_URL = 'https://thirupathybright.in/chatbot/api/auth/verify-otp/';
-document.addEventListener('DOMContentLoaded', () => {
-    // Generate a customer ID if not exists
+
+    document.addEventListener('DOMContentLoaded', () => {
+    // Initialize customer_id if not exists
     if (!localStorage.getItem('customer_id')) {
         localStorage.setItem('customer_id', 'customer_' + Math.random().toString(36).substr(2, 9));
     }
     
-    loadChatHistory();
-    initializeChat();
-    document.getElementById('message-input').focus();
-});
-// Initialize chat
-document.addEventListener('DOMContentLoaded', () => {
+    // Initialize message count if not exists
+    if (!localStorage.getItem('messageCount')) {
+        localStorage.setItem('messageCount', '0');
+    }
+    
     loadChatHistory();
     initializeChat();
     document.getElementById('message-input').focus();
@@ -647,9 +646,6 @@ function loadChatHistory() {
     });
 }
 
-// Form submission
-// Form submission
-// Form submission
 document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -663,14 +659,19 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
     const message = input.value.trim();
     if (!message) return;
 
-    const messageCount = parseInt(localStorage.getItem('messageCount') || '0');
+    // Get and increment message count
+    let messageCount = parseInt(localStorage.getItem('messageCount') || '0');
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
 
-    if (!isAuthenticated && messageCount >= 2) {
+    if (!isAuthenticated && messageCount >= 1) { // Show after first message
         document.getElementById('auth-modal').classList.remove('hidden');
         localStorage.setItem('pendingMessage', message);
         return;
     }
+
+    // Increment and save message count
+    messageCount++;
+    localStorage.setItem('messageCount', messageCount.toString());
 
     input.value = '';
     await sendMessage(message);
@@ -709,10 +710,8 @@ async function sendMessage(message) {
         typingIndicator.remove();
         
         if (data.response) {
-            // Handle successful response
             addMessage('assistant', data.response);
         } else if (data.error) {
-            // Handle error response
             throw new Error(data.error);
         }
     } catch (error) {
