@@ -3,110 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Metallurgist - Advanced chatbot for metallurgy consulting and steel industry expertise">
-    <meta name="keywords" content="AI Metallurgist, metallurgy, steel industry, chat interface, metal consulting">
-    <meta name="author" content="Thirupathy Bright">
-    <meta property="og:title" content="AI Metallurgist Chat Interface">
-    <meta property="og:description" content="Get expert metallurgy consultation through our AI-powered chat interface">
-    <meta property="og:image" content="images/Floating Robot-Photoroom.png">
-    <meta property="og:url" content="https://thirupathybright.com">
-    <meta name="twitter:card" content="summary_large_image">
-    <link rel="canonical" href="https://thirupathybright.com/chat">
-    
-    <title>AI Metallurgist - Expert Metallurgy Consultation</title>
-    
-    <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    
-    <!-- Stylesheets -->
+    <title>Premium AI Metallurgist</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
     <style>
-        /* Base styles */
         :root {
-            --primary-bg: #1a1a1a;
-            --secondary-bg: #2d2d2d;
-            --accent-color: #8B4000;
-            --accent-hover: #A0522D;
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
             --text-primary: #ffffff;
-            --text-secondary: #e5e7eb;
-            --border-color: #333;
+            --border-color: #333333;
+            --accent-color: #963800;
+            --accent-hover: #b54700;
+            --bubble-user: #963800;
+            --bubble-assistant: #2d2d2d;
         }
 
-        /* Core styles */
+        :root[data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #1a1a1a;
+            --border-color: #e0e0e0;
+            --accent-color: #963800;
+            --accent-hover: #b54700;
+            --bubble-user: #963800;
+            --bubble-assistant: #f5f5f5;
+        }
+
         body {
-            background-color: var(--primary-bg);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
-            font-family: system-ui, -apple-system, sans-serif;
-            overflow-x: hidden;
         }
 
-        /* Sliding Menu */
-        .sliding-menu {
-            position: fixed;
-            left: -280px;
-            top: 0;
-            width: 280px;
-            height: 100vh;
-            background-color: var(--secondary-bg);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+        .sidebar {
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
         }
 
-        .sliding-menu.active {
-            transform: translateX(280px);
+        .top-bar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-            z-index: 999;
-            backdrop-filter: blur(3px);
+        .input-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
         }
 
-        .menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .feature-button {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
         }
 
-        /* Navigation styles */
-        .menu-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
+        .feature-button:hover {
+            background-color: var(--border-color);
+        }
+
+        .send-button {
+            background-color: var(--accent-color);
+        }
+
+        .send-button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .user-bubble {
+            background-color: var(--bubble-user);
+            color: white;
+        }
+
+        .assistant-bubble {
+            background-color: var(--bubble-assistant);
             color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
         }
 
-        .menu-link:hover, .menu-link:focus {
-            background-color: rgba(255,255,255,0.1);
-            border-left-color: var(--accent-color);
+        #auth-modal {
+            background-color: rgba(0, 0, 0, 0.75);
         }
 
-        .menu-link i {
-            width: 24px;
-            margin-right: 12px;
+        #auth-modal > div {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
         }
 
-        /* Chat interface styles */
+        .sidebar-link:hover {
+            background-color: var(--border-color);
+        }
+
+        .sidebar {
+            background-color: var(--bg-secondary);
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            width: 256px;
+        }
+
+        .sidebar.closed {
+            width: 0;
+            transform: translateX(-100%);
+        }
+
+        .main-content {
+            margin-left: 256px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .top-bar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .chat-container {
-            background-color: var(--primary-bg);
-            scroll-behavior: smooth;
+            background-color: var(--bg-primary);
+        }
+
+        .input-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container:focus-within {
+            border-color: #64748b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .chat-bubble {
@@ -115,52 +136,76 @@
             border-radius: 1rem;
             max-width: 80%;
             animation: bubbleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .user-bubble {
-            background-color: var(--accent-color);
+            background-color: #9333ea;
+            background-image: linear-gradient(135deg, #b54700, #7c3aed);
+            color: white;
             margin-left: auto;
             margin-right: 1rem;
         }
 
         .assistant-bubble {
-            background-color: var(--secondary-bg);
+            background-color: #3c3d3d;
             margin-left: 1rem;
+            color: #e5e7eb;
         }
 
-        /* Input area styles */
-        .input-container {
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            transition: border-color 0.2s ease;
-        }
-
-        .input-container:focus-within {
-            border-color: var(--accent-color);
-        }
-
-        /* Button styles */
         .feature-button {
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.2s;
         }
 
         .feature-button:hover {
-            background-color: rgba(255,255,255,0.1);
+            background-color: #334155;
+            border-color: #475569;
+            transform: translateY(-1px);
         }
 
         .send-button {
-            background-color: var(--accent-color);
-            transition: all 0.2s ease;
+            background-color: #9333ea;
+            background-image: linear-gradient(135deg, #9333ea, #7c3aed);
+            transition: all 0.2s;
         }
 
         .send-button:hover {
-            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
         }
 
-        /* Animations */
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #9333ea;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .sidebar-link {
+            transition: all 0.2s;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+        }
+
+        .sidebar-link:hover {
+            background-color: #334155;
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
         @keyframes bubbleIn {
             0% { 
                 opacity: 0;
@@ -172,569 +217,631 @@
             }
         }
 
-        /* Loading indicator */
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 12px;
-        }
-
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-6px); }
-        }
-
-        /* Scrollbar styling */
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: var(--secondary-bg);
+            background: #1e293b;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
+            background: #4b5563;
+            border-radius: 2px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color);
+            background: #6b7280;
         }
 
-        /* Responsive design */
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0 !important;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+
         @media (max-width: 768px) {
             .chat-container {
-                padding: 0 1rem !important;
+                padding: 0.5rem !important;
             }
 
             .chat-bubble {
                 max-width: 90%;
-            }
-
-            .sliding-menu {
-                width: 250px;
-                left: -250px;
-            }
-
-            .sliding-menu.active {
-                transform: translateX(250px);
-            }
-
-            .top-bar span:not(.mobile-visible) {
-                display: none;
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
             }
 
             .input-container {
-                margin: 0 0.5rem;
+                padding: 0.5rem;
             }
-        }
 
-        /* Accessibility improvements */
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
+            .feature-button {
+                padding: 0.375rem;
+            }
 
-        /* Print styles */
-        @media print {
-            .sliding-menu,
-            .input-container,
-            .feature-button,
             .send-button {
-                display: none !important;
+                padding: 0.375rem 0.75rem;
             }
+            
+            .typing-indicator {
+                margin: 0.5rem;
+            }
+        }
 
-            body {
-                background: white;
-                color: black;
+        @media (max-width: 480px) {
+            .top-bar {
+                padding: 0.5rem;
             }
 
             .chat-bubble {
-                border: 1px solid #ccc;
-                break-inside: avoid;
+                max-width: 95%;
+                font-size: 0.9rem;
+            }
+
+            .feature-button:not(.send-button) {
+                display: none;
+            }
+
+            .send-button {
+                margin-left: 0.5rem;
+            }
+
+            #auth-modal > div {
+                width: 90%;
+                margin: 1rem;
+            }
+        }
+        .loading-spinner {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-loading .btn-text {
+    visibility: hidden;
+  }
+
+  .btn-loading .loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .assistant-bubble {
+    background-color: #3c3d3d;
+    margin-left: 1rem;
+    color: #e5e7eb;
+    line-height: 1.5;
+}
+
+.assistant-bubble p {
+    margin-bottom: 1rem;
+}
+
+.assistant-bubble strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+.assistant-bubble ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.assistant-bubble li {
+    margin: 0.5rem 0;
+}
+
+        /* Touch Device Optimizations */
+        @media (hover: none) {
+            .feature-button, .send-button {
+                padding: 0.75rem;
+            }
+
+            input, button {
+                min-height: 44px; /* iOS minimum tappable area */
             }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="visually-hidden focus:not-visually-hidden">
-        Skip to main content
-    </a>
-
-    <!-- Sliding Menu -->
-    <nav class="sliding-menu" aria-label="Main navigation">
-        <div class="p-4 border-b border-gray-600">
-            <h2 class="text-xl font-bold flex items-center">
-                <img src="images/Floating Robot-Photoroom.png" alt="" class="w-8 h-8 mr-2" aria-hidden="true">
-                Menu
-            </h2>
-        </div>
-        <div class="py-4">
-            <a href="home.html" class="menu-link" aria-label="Go to home page">
-                <i class="fas fa-home" aria-hidden="true"></i>
-                <span>Home</span>
-            </a>
-            <a href="/contact" class="menu-link" aria-label="Contact us">
-                <i class="fas fa-envelope" aria-hidden="true"></i>
-                <span>Contact</span>
-            </a>
-            <a href="/about" class="menu-link" aria-label="About AI Metallurgist">
-                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                <span>About</span>
-            </a>
-            <a href="/services" class="menu-link" aria-label="Our services">
-                <i class="fas fa-cogs" aria-hidden="true"></i>
-                <span>Services</span>
-            </a>
-        </div>
-    </nav>
-    
-    <!-- Menu Overlay -->
-    <div class="menu-overlay" aria-hidden="true"></div>
-
-    <!-- Top Navigation Bar -->
-    <header class="top-bar p-2 flex items-center space-x-4 bg-secondary-bg border-b border-border-color">
-        <div class="flex items-center space-x-2">
-            <button class="p-2 feature-button rounded" aria-label="Toggle menu">
-                <i class="fas fa-bars" aria-hidden="true"></i>
-            </button>
-            <div class="flex items-center space-x-2">
-                <img src="images/Floating Robot-Photoroom.png" alt="AI Metallurgist Logo" class="w-8 h-8 rounded-full">
-                <span class="text-sm mobile-visible">AI Metallurgist</span>
-            </div>
-        </div>
-        <div class="flex-grow"></div>
-        <div class="flex items-center space-x-2">
-            <button class="p-2 feature-button rounded" id="theme-toggle" aria-label="Toggle dark mode">
-                <i class="fas fa-moon" aria-hidden="true"></i>
-            </button>
-            <button class="p-2 feature-button rounded" id="fullscreen-toggle" aria-label="Toggle fullscreen">
-                <i class="fas fa-expand" aria-hidden="true"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main id="main-content" class="flex-grow flex flex-col h-[calc(100vh-120px)]">
-        <!-- Chat Messages -->
-        <section class="flex-grow overflow-y-auto custom-scrollbar p-4" id="chat-container" style="padding: 0 10vw;">
-            <div class="flex justify-center mb-8">
-                <div class="text-center">
-                    <img src="images/Floating Robot-Photoroom.png" 
-                         alt="AI Metallurgist Chat Logo" 
-                         class="w-20 h-20 mx-auto mb-4"
-                         loading="lazy">
-                    <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
-                    <p class="text-gray-400">AI THIRUPATHYBRIGHT.COM</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Input Area -->
-        <footer class="p-4">
-            <form id="chat-form" class="relative">
-                <div class="input-container rounded-lg flex items-center p-2">
-                    <label for="message-input" class="visually-hidden">Type your message</label>
-                    <input type="text" 
-                           id="message-input"
-                           class="flex-grow bg-transparent outline-none px-3 py-2"
-                           placeholder="Ask AI Metallurgist..."
-                           autocomplete="off"
-                           aria-label="Chat message">
-                    
-                    <div class="flex items-center space-x-2 px-2">
-                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Format text">
-                            <i class="fas fa-palette" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Change language">
-                            <i class="fas fa-globe" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="feature-button p-2 rounded text-gray-400 hover:text-white" aria-label="Upload image">
-                            <i class="fas fa-image" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" 
-                                id="clear-button"
-                                class="feature-button p-2 rounded text-gray-400 hover:text-white"
-                                aria-label="Clear input">
-                            <i class="fas fa-times" aria-hidden="true"></i>
-                        </button>
-                        <button type="submit" 
-                                class="send-button p-2 px-4 rounded text-white ml-2"
-                                aria-label="Send message">
-                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </footer>
-    </main>
-
-    <!-- Authentication Modal -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-labelledby="modal-title">
-        <div class="bg-gray-800 p-6 rounded-lg w-96 shadow-xl">
-            <h2 id="modal-title" class="text-xl text-white mb-4">Authentication Required</h2>
-            
-            <!-- Email/Phone Form -->
-            <div id="auth-form">
-                <div class="mb-4">
-                    <label for="auth-email" class="block text-sm mb-2">Email</label>
-                    <input type="email" 
-                           id="auth-email" 
-                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
-                           placeholder="Enter your email"
-                           required>
-                </div>
-                <div class="mb-4">
-                    <label for="auth-phone" class="block text-sm mb-2">Phone</label>
-                    <input type="tel" 
-                           id="auth-phone" 
-                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
-                           placeholder="Enter your phone number"
-                           required>
-                </div>
-                <button id="send-otp-btn" 
-                        class="w-full bg-accent-color hover:bg-accent-hover text-white p-2 rounded transition-colors">
-                    Send OTP
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar fixed h-screen overflow-y-auto custom-scrollbar z-50" id="sidebar">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button class="md:hidden p-2 feature-button rounded" id="close-sidebar">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <!-- OTP Form -->
-            <div id="otp-form" class="hidden">
-                <div class="mb-4">
-                    <label for="auth-otp" class="block text-sm mb-2">OTP</label>
-                    <input type="text" 
-                           id="auth-otp" 
-                           class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-accent-color" 
-                           placeholder="Enter OTP code"
-                           maxlength="6"
-                           required>
-                </div>
-                <button id="verify-otp-btn" 
-                        class="w-full bg-accent-color hover:bg-accent-hover text-white p-2 rounded transition-colors">
-                    Verify OTP
-                </button>
-            </div>
+            <nav class="space-y-2">
+                <a href="home.html" class="sidebar-link flex items-center">
+                    <i class="fas fa-home w-6"></i>
+                    <span>Home</span>
+                </a>
+             
+             <hr>
+              
+            </nav>
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        // Constants
-        const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
-        const AUTH_URL = 'https://thirupathybright.in/chatbot/api/auth/verify/';
-        const OTP_URL = 'https://thirupathybright.in/chatbot/api/auth/verify-otp/';
+    <!-- Main Content -->
+    <div class="main-content flex-1 flex flex-col min-h-screen" id="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-bar p-4 flex items-center space-x-4">
+            <button class="p-2 feature-button rounded" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <img src="images/Floating Robot.jpg" alt="User" class="w-8 h-8 rounded-full bg-gray-700"/>
+                <span class="text-sm font-medium">AI</span>
+            </div>
+            <div class="flex-grow"></div>
+            <div class="flex items-center space-x-2">
+                <button class="p-2 feature-button rounded" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="p-2 feature-button rounded" id="fullscreen-toggle">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+        </div>
 
-        // Initialize chat
-        document.addEventListener('DOMContentLoaded', () => {
-            loadChatHistory();
-            initializeChat();
-            initializeMenuHandlers();
-            document.getElementById('message-input').focus();
-        });
-
-        function initializeMenuHandlers() {
-            const menuBtn = document.querySelector('.fa-bars').parentElement;
-            const slidingMenu = document.querySelector('.sliding-menu');
-            const overlay = document.querySelector('.menu-overlay');
-
-            menuBtn.addEventListener('click', () => {
-                slidingMenu.classList.toggle('active');
-                overlay.classList.toggle('active');
-                if (slidingMenu.classList.contains('active')) {
-                    menuBtn.setAttribute('aria-expanded', 'true');
-                } else {
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                }
-            });
-
-            overlay.addEventListener('click', closeMenu);
-
-            // Close menu when pressing Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && slidingMenu.classList.contains('active')) {
-                    closeMenu();
-                }
-            });
-
-            // Handle menu link clicks
-            document.querySelectorAll('.menu-link').forEach(link => {
-                link.addEventListener('click', closeMenu);
-            });
-
-            function closeMenu() {
-                slidingMenu.classList.remove('active');
-                overlay.classList.remove('active');
-                menuBtn.setAttribute('aria-expanded', 'false');
-            }
-        }
-
-        function initializeChat() {
-            const messages = getChatHistory();
-            if (messages.length === 0) {
-                addMessage('assistant', "Welcome! I'm AI METALLURGIST. How can I help you today?");
-            }
-        }
-
-        function getChatHistory() {
-            return JSON.parse(localStorage.getItem('chatHistory') || '[]');
-        }
-
-        function addMessage(role, content, save = true) {
-            const chatContainer = document.getElementById('chat-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `${role}-bubble chat-bubble mb-4`;
-            messageDiv.setAttribute('role', 'log');
-            messageDiv.setAttribute('aria-label', `${role} message`);
-            messageDiv.innerHTML = `<p>${sanitizeHTML(content)}</p>`;
-            chatContainer.appendChild(messageDiv);
-            
-            // Smooth scroll to bottom
-            chatContainer.scrollTo({
-                top: chatContainer.scrollHeight,
-                behavior: 'smooth'
-            });
-
-            if (save) {
-                const messages = getChatHistory();
-                messages.push({ role, content, timestamp: new Date().toISOString() });
-                localStorage.setItem('chatHistory', JSON.stringify(messages));
-                localStorage.setItem('messageCount', messages.length.toString());
-            }
-        }
-
-        function loadChatHistory() {
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = `
+        <!-- Main Chat Area -->
+        <div class="flex-grow flex flex-col h-[calc(100vh-120px)]">
+            <!-- Chat Messages -->
+            <div class="flex-grow overflow-y-auto custom-scrollbar p-4" id="chat-container">
                 <div class="flex justify-center mb-8">
                     <div class="text-center">
-                        <img src="images/Floating Robot-Photoroom.png" 
-                             alt="AI Metallurgist Logo" 
-                             class="w-20 h-20 mx-auto mb-4"
-                             loading="lazy">
-                        <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
-                        <p class="text-gray-400">AI THIRUPATHYBRIGHT.COM</p>
+                        <img src="images/Floating Robot.jpg" alt="Chat Logo" class="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg"/>
+                        <h1 class="text-2xl font-bold mb-2"> AI Metallurgist</h1>
+                        <p class="text-gray-400">AI </p>
                     </div>
                 </div>
-            `;
-            const messages = getChatHistory();
-            messages.forEach(msg => {
-                addMessage(msg.role, msg.content, false);
-            });
-        }
+            </div>
 
-        // Form submission handler
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Remove query parameters from URL
-            if (window.location.search) {
-                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.pushState({ path: newUrl }, '', newUrl);
-            }
-            
-            const input = document.getElementById('message-input');
-            const message = input.value.trim();
-            if (!message) return;
-
-            const messageCount = parseInt(localStorage.getItem('messageCount') || '0');
-            const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-
-            if (!isAuthenticated && messageCount >= 2) {
-                document.getElementById('auth-modal').classList.remove('hidden');
-                localStorage.setItem('pendingMessage', message);
-                return;
-            }
-
-            input.value = '';
-            await sendMessage(message);
-        });
-
-        async function sendMessage(message) {
-            addMessage('user', message);
-
-            // Show typing indicator
-            const chatContainer = document.getElementById('chat-container');
-            const typingIndicator = document.createElement('div');
-            typingIndicator.id = 'typing-indicator';
-            typingIndicator.className = 'assistant-bubble chat-bubble mb-4';
-            typingIndicator.innerHTML = `
-                <div class="typing-indicator" role="status" aria-label="AI is typing">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
+            <!-- Input Area -->
+            <form id="chat-form" class="p-4">
+                <div class="relative">
+                    <div class="input-container rounded-lg flex items-center p-2">
+                        <input type="text" 
+                               id="message-input"
+                               class="flex-grow bg-transparent outline-none px-3 py-2"
+                               placeholder="Ask your question..."
+                               autocomplete="off">
+                        
+                        <div class="flex items-center space-x-2 px-2">
+                          
+                            <button type="submit" 
+                                    class="send-button p-2 px-4 rounded text-white ml-2">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            `;
-            chatContainer.appendChild(typingIndicator);
-            chatContainer.scrollTo({
-                top: chatContainer.scrollHeight,
-                behavior: 'smooth'
-            });
+            </form>
+        </div>
+    </div>
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message })
-                });
+<!-- Auth Modal -->
+<div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 p-6 rounded-lg w-96 shadow-xl">
+        <h2 id="modal-title" class="text-xl text-white mb-4 font-bold">Verify your not a bot🤖</h2>
+        
+        <!-- Email/Phone Form -->
+        <div id="auth-form">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
+                <input type="email" 
+                       id="auth-email" 
+                       required
+                       placeholder="Enter your email" 
+                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-300 mb-1">Phone Number (Optional)</label>
+                <input type="tel" 
+                       id="auth-phone" 
+                       placeholder="Enter your phone number" 
+                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
+            </div>
+            <button id="send-otp-btn" class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
+                <span class="btn-text">Send OTP</span>
+                <div class="loading-spinner hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+            </button>
+        </div>
+        
+        <!-- OTP Form -->
+        <div id="otp-form" class="hidden">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-300 mb-1">Enter OTP</label>
+                <input type="text" 
+                       id="auth-otp" 
+                       placeholder="Enter OTP code" 
+                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
+            </div>
+            <button id="verify-otp-btn" class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
+                <span class="btn-text">Verify OTP</span>
+                <div class="loading-spinner hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+            </button>
+        </div>
+    </div>
+</div>
 
-                const data = await response.json();
-                typingIndicator.remove();
-                
-                if (data.status === 'success') {
-                    addMessage('assistant', data.response);
-                } else {
-                    throw new Error(data.message || 'Unknown error occurred');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                typingIndicator.remove();
-                addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
+    <script>
+    // Mobile Detection
+    const isMobile = window.matchMedia("(max-width: 1024px)").matches;
+    
+    // Theme toggle functionality
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    function setTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        const isDark = theme === 'dark';
+        themeIcon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        localStorage.setItem('theme', theme);
+    }
+
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    });
+
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    
+    function toggleSidebar() {
+        if (isMobile) {
+            sidebar.classList.toggle('active');
+        } else {
+            sidebar.classList.toggle('closed');
+            mainContent.classList.toggle('expanded');
+        }
+    }
+
+    document.getElementById('toggle-sidebar').addEventListener('click', toggleSidebar);
+    document.getElementById('close-sidebar').addEventListener('click', toggleSidebar);
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (isMobile && 
+            !sidebar.contains(e.target) && 
+            !e.target.closest('#toggle-sidebar') && 
+            sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        const newIsMobile = window.matchMedia("(max-width: 1024px)").matches;
+        if (newIsMobile !== isMobile) {
+            location.reload();
+        }
+    });
+
+    // Prevent zoom on double tap for touch devices
+    document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        const DOUBLE_TAP_DELAY = 300;
+        
+        if (lastTap && (now - lastTap) < DOUBLE_TAP_DELAY) {
+            e.preventDefault();
+        }
+        lastTap = now;
+    }, false);
+    // Constants
+    const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
+        const AUTH_URL = 'https://thirupathybright.in/chatbot/api/auth/verify/';
+        const OTP_URL = 'https://thirupathybright.in/chatbot/api/auth/verify-otp/';
+document.addEventListener('DOMContentLoaded', () => {
+    // Generate a customer ID if not exists
+    if (!localStorage.getItem('customer_id')) {
+        localStorage.setItem('customer_id', 'customer_' + Math.random().toString(36).substr(2, 9));
+    }
+    
+    loadChatHistory();
+    initializeChat();
+    document.getElementById('message-input').focus();
+});
+// Initialize chat
+document.addEventListener('DOMContentLoaded', () => {
+    loadChatHistory();
+    initializeChat();
+    document.getElementById('message-input').focus();
+});
+
+function initializeChat() {
+    const messages = getChatHistory();
+    if (messages.length === 0) {
+        addMessage('assistant', "Welcome! I'm AI METALLURGIST. How can I help you today?");
+    }
+}
+
+function getChatHistory() {
+    return JSON.parse(localStorage.getItem('chatHistory') || '[]');
+}
+
+
+// Update the JavaScript function
+function addMessage(role, content, save = true) {
+    const chatContainer = document.getElementById('chat-container');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `${role}-bubble chat-bubble mb-4`;
+    
+    let formattedContent = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n- /g, '<li>')
+        .replace(/^- /g, '<li>')
+        .split('\n').map(line => {
+            if (line.startsWith('<li>')) {
+                return line;
+            }
+            return `<p>${line}</p>`;
+        }).join('');
+
+    if (formattedContent.includes('<li>')) {
+        formattedContent = `<ul>${formattedContent}</ul>`;
+    }
+    
+    messageDiv.innerHTML = formattedContent;
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    if (save) {
+        const messages = getChatHistory();
+        messages.push({ role, content, timestamp: new Date().toISOString() });
+        localStorage.setItem('chatHistory', JSON.stringify(messages));
+    }
+}
+
+function loadChatHistory() {
+    const chatContainer = document.getElementById('chat-container');
+    chatContainer.innerHTML = `
+        <div class="flex justify-center mb-8">
+            <div class="text-center">
+             <img style="border-radius: 50%;background:white;"  src="images/steelai.png" alt="Chat Logo" class="w-20 h-20 mx-auto mb-4"/>
+                <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
+                <p class="text-gray-400">AI</p>
+            </div>
+        </div>
+    `;
+    const messages = getChatHistory();
+    messages.forEach(msg => {
+        addMessage(msg.role, msg.content, false);
+    });
+}
+
+// Form submission
+// Form submission
+// Form submission
+document.getElementById('chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Check if the URL has a query parameter and remove it
+    if (window.location.search) {
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+    
+    const input = document.getElementById('message-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messageCount = parseInt(localStorage.getItem('messageCount') || '0');
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+
+    if (!isAuthenticated && messageCount >= 2) {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        localStorage.setItem('pendingMessage', message);
+        return;
+    }
+
+    input.value = '';
+    await sendMessage(message);
+});
+async function sendMessage(message) {
+    addMessage('user', message);
+
+    // Show typing indicator
+    const chatContainer = document.getElementById('chat-container');
+    const typingIndicator = document.createElement('div');
+    typingIndicator.id = 'typing-indicator';
+    typingIndicator.className = 'assistant-bubble chat-bubble mb-4';
+    typingIndicator.innerHTML = `
+        <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    chatContainer.appendChild(typingIndicator);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                message: message,
+                customer_id: localStorage.getItem('customer_id') || 'default_customer'
+            })
+        });
+
+        const data = await response.json();
+        typingIndicator.remove();
+        
+        if (data.response) {
+            // Handle successful response
+            addMessage('assistant', data.response);
+        } else if (data.error) {
+            // Handle error response
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        typingIndicator.remove();
+        addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
+    }
+}
+// Clear button functionality
+document.getElementById('clear-button').addEventListener('click', () => {
+    document.getElementById('message-input').value = '';
+    document.getElementById('message-input').focus();
+});
+
+// Fullscreen toggle
+document.getElementById('fullscreen-toggle').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+});
+// Authentication handlers
+document.getElementById('send-otp-btn').addEventListener('click', async () => {
+    const button = document.getElementById('send-otp-btn');
+    const email = document.getElementById('auth-email').value;
+    const phone = document.getElementById('auth-phone').value;
+    
+    // Show loading state
+    button.classList.add('btn-loading');
+    button.querySelector('.loading-spinner').classList.remove('hidden');
+    button.disabled = true;
+    
+    try {
+        const response = await fetch(AUTH_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, phone })
+        });
+
+        if (response.ok) {
+            document.getElementById('auth-form').classList.add('hidden');
+            document.getElementById('otp-form').classList.remove('hidden');
+            document.getElementById('modal-title').textContent = 'Enter OTP';
+        } else {
+            throw new Error('Failed to send OTP ');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send OTP Email ID REQUIRED');
+    } finally {
+        // Remove loading state
+        button.classList.remove('btn-loading');
+        button.querySelector('.loading-spinner').classList.add('hidden');
+        button.disabled = false;
+    }
+});
+
+document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+    const button = document.getElementById('verify-otp-btn');
+    const email = document.getElementById('auth-email').value;
+    const otp = document.getElementById('auth-otp').value;
+    const phone = document.getElementById('auth-phone').value;
+    
+    // Show loading state
+    button.classList.add('btn-loading');
+    button.querySelector('.loading-spinner').classList.remove('hidden');
+    button.disabled = true;
+    
+    try {
+        const response = await fetch(OTP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp, phone })
+        });
+
+        if (response.ok) {
+            localStorage.setItem('isAuthenticated', 'true');
+            document.getElementById('auth-modal').classList.add('hidden');
+            
+            const pendingMessage = localStorage.getItem('pendingMessage');
+            if (pendingMessage) {
+                localStorage.removeItem('pendingMessage');
+                sendMessage(pendingMessage);
+            }
+        } else {
+            throw new Error('Invalid OTP');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Invalid OTP');
+    } finally {
+        // Remove loading state
+        button.classList.remove('btn-loading');
+        button.querySelector('.loading-spinner').classList.add('hidden');
+        button.disabled = false;
+    }
+});
+
+// URL parameter handling
+window.addEventListener('DOMContentLoaded', () => {
+    // Get the query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q');
+    
+    if (searchQuery) {
+        // Decode the search value
+        const decodedQuery = decodeURIComponent(searchQuery);
+        
+        // Set the input value
+        const messageInput = document.getElementById('message-input');
+        if (messageInput) {
+            messageInput.value = decodedQuery;
+            
+            // Automatically submit the form
+            const form = document.getElementById('chat-form');
+            if (form) {
+                form.dispatchEvent(new Event('submit'));
             }
         }
+    }
+});
 
-        // Clear button handler
-        document.getElementById('clear-button').addEventListener('click', () => {
-            const input = document.getElementById('message-input');
-            input.value = '';
-            input.focus();
-        });
-
-        // Fullscreen toggle handler
-        document.getElementById('fullscreen-toggle').addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        // Authentication handlers
-        document.getElementById('send-otp-btn').addEventListener('click', async () => {
-            const email = document.getElementById('auth-email').value;
-            const phone = document.getElementById('auth-phone').value;
-            
-            try {
-                const response = await fetch(AUTH_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, phone })
-                });
-
-                if (response.ok) {
-                    document.getElementById('auth-form').classList.add('hidden');
-                    document.getElementById('otp-form').classList.remove('hidden');
-                    document.getElementById('modal-title').textContent = 'Enter OTP';
-                    document.getElementById('auth-otp').focus();
-                } else {
-                    throw new Error('Failed to send OTP');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to send OTP. Please try again.');
-            }
-        });
-
-        document.getElementById('verify-otp-btn').addEventListener('click', async () => {
-            const email = document.getElementById('auth-email').value;
-            const otp = document.getElementById('auth-otp').value;
-            const phone = document.getElementById('auth-phone').value;
-            
-            try {
-                const response = await fetch(OTP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otp, phone })
-                });
-
-                if (response.ok) {
-                    localStorage.setItem('isAuthenticated', 'true');
-                    document.getElementById('auth-modal').classList.add('hidden');
-                    
-                    const pendingMessage = localStorage.getItem('pendingMessage');
-                    if (pendingMessage) {
-                        localStorage.removeItem('pendingMessage');
-                        sendMessage(pendingMessage);
-                    }
-                } else {
-                    throw new Error('Invalid OTP');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Invalid OTP. Please try again.');
-            }
-        });
-
-        // URL parameter handling
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchQuery = urlParams.get('q');
-            
-            if (searchQuery) {
-                const decodedQuery = decodeURIComponent(searchQuery);
-                const messageInput = document.getElementById('message-input');
-                if (messageInput) {
-                    messageInput.value = decodedQuery;
-                    const form = document.getElementById('chat-form');
-                    if (form) {
-                        form.dispatchEvent(new Event('submit'));
-                    }
-                }
-            }
-        });
-
-        // Security: Sanitize HTML to prevent XSS
-        function sanitizeHTML(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        // Accessibility: Handle keyboard navigation in menu
-        function handleMenuKeyboardNav() {
-            const menuLinks = document.querySelectorAll('.menu-link');
-            menuLinks.forEach((link, index) => {
-                link.addEventListener('keydown', (e) => {
-                    if (e.key === 'ArrowDown' && index < menuLinks.length - 1) {
-                        e.preventDefault();
-                        menuLinks[index + 1].focus();
-                    } else if (e.key === 'ArrowUp' && index > 0) {
-                        e.preventDefault();
-                        menuLinks[index - 1].focus();
-                    }
-                });
-            });
-        }
-
-        // Initialize keyboard navigation
-        handleMenuKeyboardNav();
-    </script>
-</body>
-</html>
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+   </script>
