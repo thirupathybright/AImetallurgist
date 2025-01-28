@@ -407,6 +407,9 @@
             </div>
             <div class="flex-grow"></div>
             <div class="flex items-center space-x-2">
+                <button class="p-2 feature-button rounded" id="clear-chat">
+                    <i class="fas fa-trash"></i>
+                </button>
                 <button class="p-2 feature-button rounded" id="theme-toggle">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -723,6 +726,30 @@ function getChatHistory() {
     return JSON.parse(localStorage.getItem('chatHistory') || '[]');
 }
 
+function clearChatHistory() {
+    // Remove chat history from localStorage
+    localStorage.removeItem('chatHistory');
+    
+    // Reset message count to 0
+    localStorage.setItem('messageCount', '0');
+    
+    // Keep customer_id and authentication status
+    const customerId = localStorage.getItem('customer_id');
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    
+    // Clear all localStorage except essential items
+    localStorage.clear();
+    
+    // Restore essential items
+    if (customerId) localStorage.setItem('customer_id', customerId);
+    if (isAuthenticated) localStorage.setItem('isAuthenticated', isAuthenticated);
+    
+    // Reload chat container
+    loadChatHistory();
+    
+    // Add confirmation message
+    addMessage('assistant', "Chat history has been cleared. How can I help you today?");
+}
 
 // Update the JavaScript function
 function addMessage(role, content, save = true) {
@@ -730,48 +757,75 @@ function addMessage(role, content, save = true) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `${role}-bubble chat-bubble mb-4`;
     
+    // Format content with markdown-style formatting
     let formattedContent = content
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n- /g, '<li>')
         .replace(/^- /g, '<li>')
-        .split('\n').map(line => {
+        .split('\n')
+        .map(line => {
             if (line.startsWith('<li>')) {
                 return line;
             }
             return `<p>${line}</p>`;
-        }).join('');
+        })
+        .join('');
 
+    // Wrap list items in ul tags if present
     if (formattedContent.includes('<li>')) {
         formattedContent = `<ul>${formattedContent}</ul>`;
     }
     
+    // Set content and scroll to bottom
     messageDiv.innerHTML = formattedContent;
     chatContainer.appendChild(messageDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
+    // Save to localStorage if required
     if (save) {
         const messages = getChatHistory();
-        messages.push({ role, content, timestamp: new Date().toISOString() });
+        messages.push({
+            role,
+            content,
+            timestamp: new Date().toISOString()
+        });
         localStorage.setItem('chatHistory', JSON.stringify(messages));
     }
 }
 
 function loadChatHistory() {
     const chatContainer = document.getElementById('chat-container');
+    
+    // Reset container with initial header
     chatContainer.innerHTML = `
         <div class="flex justify-center mb-8">
             <div class="text-center">
-             <img style="border-radius: 50%;background:white;"  src="images/forth.jpg" alt="Chat Logo" class="w-20 h-20 mx-auto mb-4"/>
+                <img style="border-radius: 50%;background:white;" 
+                     src="images/forth.jpg" 
+                     alt="Chat Logo" 
+                     class="w-20 h-20 mx-auto mb-4"/>
                 <h1 class="text-2xl font-bold mb-2">AI METALLURGIST</h1>
                 <p class="text-gray-400">AI</p>
             </div>
         </div>
     `;
+    
+    // Load any existing messages from localStorage
     const messages = getChatHistory();
     messages.forEach(msg => {
         addMessage(msg.role, msg.content, false);
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const clearButton = document.getElementById('clear-chat');
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all chat history? This cannot be undone.')) {
+                clearChatHistory();
+            }
+        });
+    }
+});
 
 document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
