@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://aimetallurgist.com/</loc>
-        <lastmod>2024-01-28</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://aimetallurgist.com/page-url/</loc>
-        <lastmod>2025-01-28</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-    <loc>https://aimetallurgist.com/page-url/</loc>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://aimetallurgist.com/</loc>
+    <lastmod>2024-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
     <image:image>
-        <image:loc>https://aimetallurgist.com/assets/images/logo/logo.png</image:loc>
+      <image:loc>https://aimetallurgist.com/assets/images/logo/logo.png</image:loc>
     </image:image>
-</url>
-
+  </url>
+  <url>
+    <loc>https://aimetallurgist.com/page-url/</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
