@@ -99,10 +99,11 @@
         }
 
         .sidebar {
-            background-color: var(--bg-secondary);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             transition: all 0.3s ease;
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
             width: 256px;
+            border-right: 2px solid #475569;
         }
 
         .sidebar.closed {
@@ -131,35 +132,39 @@
         .input-container {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 1.5rem;
+            backdrop-filter: blur(10px);
         }
 
         .input-container:focus-within {
             border-color: #64748b;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(147, 51, 234, 0.1);
         }
 
         .chat-bubble {
             position: relative;
-            padding: 1rem;
-            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 1.25rem;
             max-width: 80%;
             animation: bubbleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
         }
 
         .user-bubble {
-            background-color: #9333ea;
-            background-image: linear-gradient(135deg, #b54700, #7c3aed);
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
             color: white;
             margin-left: auto;
             margin-right: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .assistant-bubble {
-            background-color: #3c3d3d;
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
             margin-left: 1rem;
             color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .feature-button {
@@ -200,14 +205,28 @@
         }
 
         .sidebar-link {
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             border-radius: 0.5rem;
             padding: 0.75rem 1rem;
             margin: 0.25rem 0;
+            position: relative;
+            overflow: hidden;
         }
 
         .sidebar-link:hover {
-            background-color: #334155;
+            background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-link:hover::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #9333ea, #7c3aed);
         }
 
         @keyframes typingBounce {
@@ -412,6 +431,21 @@
                 <span class="text-sm font-medium">AI</span>
             </div>
             <div class="flex-grow"></div>
+
+            <!-- User Info (shown when authenticated) -->
+            <div id="user-info" class="hidden items-center space-x-3 mr-4">
+                <div class="flex items-center space-x-2 bg-gray-700 px-3 py-2 rounded-lg">
+                    <i class="fas fa-user-circle text-lg text-purple-400"></i>
+                    <span id="user-email" class="text-sm font-medium"></span>
+                </div>
+                <a href="https://thirupathybright.in/accounts/logout/"
+                   onclick="localStorage.setItem('isAuthenticated', 'false'); localStorage.removeItem('customerId'); localStorage.removeItem('userEmail'); localStorage.setItem('messageCount', '0');"
+                   class="flex items-center space-x-1 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+
             <div class="flex items-center space-x-2">
                 <button class="p-2 feature-button rounded" id="clear-chat">
                     <i class="fas fa-trash"></i>
@@ -466,171 +500,31 @@
     <script>
         const authModalHTML = `
 <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-gray-800 p-6 rounded-lg w-96 shadow-xl">
-        <h2 id="modal-title" class="text-xl text-white mb-4 font-bold">Verify your not a bot🤖</h2>
-        
-        <!-- Email/Phone Form -->
-        <form id="auth-form" onsubmit="return false;">
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
-                <input type="email" 
-                       id="auth-email" 
-                       required
-                       placeholder="Enter your email" 
-                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-300 mb-1">Phone Number (Optional)</label>
-                <input type="tel" 
-                       id="auth-phone" 
-                       placeholder="Enter your phone number" 
-                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
-            </div>
-            <button type="submit" 
-                    id="send-otp-btn" 
-                    class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
-                <span class="btn-text">Send OTP</span>
-                <div class="loading-spinner hidden"></div>
-            </button>
-        </form>
-        
-        <!-- OTP Form -->
-        <form id="otp-form" class="hidden">
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-300 mb-1">Enter OTP</label>
-                <input type="text" 
-                       id="auth-otp" 
-                       required
-                       placeholder="Enter OTP code" 
-                       class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
-            </div>
-            <button type="submit"
-                    id="verify-otp-btn" 
-                    class="relative w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white p-3 rounded font-medium hover:from-purple-700 hover:to-purple-900 transition-all">
-                <span class="btn-text">Verify OTP</span>
-                <div class="loading-spinner hidden"></div>
-            </button>
-        </form>
+    <div class="bg-gray-800 p-8 rounded-lg w-96 shadow-xl">
+        <h2 class="text-2xl text-white mb-2 font-bold text-center">Continue with Google</h2>
+        <p class="text-gray-300 mb-6 text-center text-sm">Sign in to save your chat history and continue the conversation</p>
+
+        <a href="https://thirupathybright.in/accounts/google/login/?next=https://aimetallurgist.com/"
+           class="flex items-center justify-center w-full bg-white text-gray-800 p-3 rounded-lg font-medium hover:bg-gray-100 transition-all shadow-md">
+            <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+        </a>
+
+        <button onclick="document.getElementById('auth-modal').classList.add('hidden')"
+                class="w-full mt-4 text-gray-400 hover:text-white transition-colors text-sm">
+            Cancel
+        </button>
     </div>
 </div>`;
 
 // Replace existing modal with new one
 document.body.insertAdjacentHTML('beforeend', authModalHTML);
 
-// Updated Authentication handlers
-document.getElementById('auth-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log('Send OTP form submitted'); // Debug log
-    
-    const button = document.getElementById('send-otp-btn');
-    const email = document.getElementById('auth-email').value.trim();
-    const phone = document.getElementById('auth-phone').value.trim();
-    
-    // Validate email
-    if (!email) {
-        alert('Email is required');
-        return;
-    }
-    
-    // Show loading state
-    button.classList.add('btn-loading');
-    button.querySelector('.loading-spinner').classList.remove('hidden');
-    button.disabled = true;
-    
-    try {
-        console.log('Sending OTP request to:', AUTH_URL); // Debug log
-        const response = await fetch(AUTH_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ email, phone })
-        });
-
-        console.log('OTP Response status:', response.status); // Debug log
-        const responseData = await response.json();
-        console.log('OTP Response data:', responseData); // Debug log
-
-        if (response.ok) {
-            alert('OTP sent successfully to your email');
-            document.getElementById('auth-form').classList.add('hidden');
-            document.getElementById('otp-form').classList.remove('hidden');
-            document.getElementById('modal-title').textContent = 'Enter OTP';
-            document.getElementById('auth-otp').focus();
-        } else {
-            throw new Error(responseData.error || 'Failed to send OTP');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to send OTP. Please try again.');
-    } finally {
-        // Remove loading state
-        button.classList.remove('btn-loading');
-        button.querySelector('.loading-spinner').classList.add('hidden');
-        button.disabled = false;
-    }
-});
-
-// Handle OTP verification
-document.getElementById('otp-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log('Verify OTP form submitted'); // Debug log
-    
-    const button = document.getElementById('verify-otp-btn');
-    const email = document.getElementById('auth-email').value.trim();
-    const otp = document.getElementById('auth-otp').value.trim();
-    const phone = document.getElementById('auth-phone').value.trim();
-    
-    if (!otp) {
-        alert('Please enter the OTP');
-        return;
-    }
-    
-    // Show loading state
-    button.classList.add('btn-loading');
-    button.querySelector('.loading-spinner').classList.remove('hidden');
-    button.disabled = true;
-    
-    try {
-        console.log('Verifying OTP...'); // Debug log
-        const response = await fetch(OTP_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ email, otp, phone })
-        });
-
-        console.log('Verify response status:', response.status); // Debug log
-        const responseData = await response.json();
-        console.log('Verify response data:', responseData); // Debug log
-
-        if (response.ok) {
-            localStorage.setItem('isAuthenticated', 'true');
-            document.getElementById('auth-modal').classList.add('hidden');
-            
-            const pendingMessage = localStorage.getItem('pendingMessage');
-            if (pendingMessage) {
-                localStorage.removeItem('pendingMessage');
-                sendMessage(pendingMessage);
-            }
-            
-            alert('Successfully verified!');
-        } else {
-            throw new Error(responseData.error || 'Invalid OTP');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Invalid OTP. Please try again.');
-    } finally {
-        // Remove loading state
-        button.classList.remove('btn-loading');
-        button.querySelector('.loading-spinner').classList.add('hidden');
-        button.disabled = false;
-    }
-});
     // Mobile Detection
     const isMobile = window.matchMedia("(max-width: 1024px)").matches;
     
@@ -700,26 +594,107 @@ document.getElementById('otp-form').addEventListener('submit', async (e) => {
         }
         lastTap = now;
     }, false);
-    // Constants
+
+    // Constants - Production URLs
     const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
-        const AUTH_URL = 'https://thirupathybright.in/chatbot/api/auth/verify/';
-        const OTP_URL = 'https://thirupathybright.in/chatbot/api/auth/verify-otp/';
+    const AUTH_STATUS_URL = 'https://thirupathybright.in/chatbot/api/auth/status/';
+    const MIGRATE_URL = 'https://thirupathybright.in/chatbot/api/migrate-conversations/';
+    const GOOGLE_LOGIN_URL = 'https://thirupathybright.in/accounts/google/login/?next=https://aimetallurgist.com/';
+
+    // Generate session ID for unauthenticated users
+    let sessionId = localStorage.getItem('session_id') || 'session_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('session_id', sessionId);
+
+    // Initialize from localStorage to persist across page refreshes
+    let messageCount = parseInt(localStorage.getItem('messageCount') || '0');
+    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    let customerId = localStorage.getItem('customerId');
+
+    // Check authentication status on page load
+    async function checkAuthStatus() {
+        try {
+            const response = await fetch(AUTH_STATUS_URL, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const data = await response.json();
+
+            if (data.authenticated) {
+                isAuthenticated = true;
+                customerId = data.customer_id;
+
+                // Store authentication state in localStorage
+                localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('customerId', data.customer_id);
+
+                // Migrate any temporary conversations
+                await migrateConversations();
+
+                // Hide auth modal if showing
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) {
+                    authModal.classList.add('hidden');
+                }
+
+                // Show user info
+                showUserInfo(data.email);
+
+                // Store email for future page loads
+                localStorage.setItem('userEmail', data.email);
+            } else {
+                // Clear auth state if not authenticated
+                isAuthenticated = false;
+                localStorage.setItem('isAuthenticated', 'false');
+                localStorage.removeItem('customerId');
+                localStorage.removeItem('userEmail');
+            }
+        } catch (error) {
+            console.error('Error checking auth status:', error);
+        }
+    }
+
+    async function migrateConversations() {
+        try {
+            await fetch(MIGRATE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ session_id: sessionId })
+            });
+        } catch (error) {
+            console.error('Error migrating conversations:', error);
+        }
+    }
+
+    function showUserInfo(email) {
+        // Show user info div
+        const userInfoDiv = document.getElementById('user-info');
+        const userEmailSpan = document.getElementById('user-email');
+
+        if (userInfoDiv && userEmailSpan) {
+            userEmailSpan.textContent = email;
+            userInfoDiv.classList.remove('hidden');
+            userInfoDiv.classList.add('flex');
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-    // Initialize customer_id if not exists
-    if (!localStorage.getItem('customer_id')) {
-        localStorage.setItem('customer_id', 'customer_' + Math.random().toString(36).substr(2, 9));
-    }
-    
-    // Initialize message count if not exists
-    if (!localStorage.getItem('messageCount')) {
-        localStorage.setItem('messageCount', '0');
-    }
-    
-    loadChatHistory();
-    initializeChat();
-    document.getElementById('message-input').focus();
-});
+        // Show cached user info immediately if authenticated
+        if (isAuthenticated) {
+            const cachedEmail = localStorage.getItem('userEmail');
+            if (cachedEmail) {
+                showUserInfo(cachedEmail);
+            }
+        }
+
+        // Then verify with server (will update if needed)
+        checkAuthStatus();
+        loadChatHistory();
+        initializeChat();
+        document.getElementById('message-input').focus();
+    });
 
 function initializeChat() {
     const messages = getChatHistory();
@@ -835,31 +810,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     // Check if the URL has a query parameter and remove it
     if (window.location.search) {
         const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.pushState({ path: newUrl }, '', newUrl);
     }
-    
+
     const input = document.getElementById('message-input');
     const message = input.value.trim();
     if (!message) return;
 
-    // Get and increment message count
-    let messageCount = parseInt(localStorage.getItem('messageCount') || '0');
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-
-    if (!isAuthenticated && messageCount >= 1) { // Show after first message
+    // Check if authentication is required after first message
+    if (!isAuthenticated && messageCount >= 1) {
         document.getElementById('auth-modal').classList.remove('hidden');
         localStorage.setItem('pendingMessage', message);
         return;
     }
 
-    // Increment and save message count
     messageCount++;
     localStorage.setItem('messageCount', messageCount.toString());
-
     input.value = '';
     await sendMessage(message);
 });
@@ -887,17 +857,25 @@ async function sendMessage(message) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
+            credentials: 'include',
+            body: JSON.stringify({
                 message: message,
-                customer_id: localStorage.getItem('customer_id') || 'default_customer'
+                session_id: sessionId
             })
         });
 
         const data = await response.json();
         typingIndicator.remove();
-        
+
         if (data.response) {
             addMessage('assistant', data.response);
+
+            // Show auth modal if required after response
+            if (data.requires_auth && messageCount >= 1) {
+                setTimeout(() => {
+                    document.getElementById('auth-modal').classList.remove('hidden');
+                }, 1000);
+            }
         } else if (data.error) {
             throw new Error(data.error);
         }
@@ -921,125 +899,7 @@ document.getElementById('fullscreen-toggle').addEventListener('click', () => {
         document.exitFullscreen();
     }
 });
-// Authentication handlers
-document.getElementById('send-otp-btn').addEventListener('click', async (e) => {
-    e.preventDefault(); // Prevent any default form submission
-    
-    const button = document.getElementById('send-otp-btn');
-    const email = document.getElementById('auth-email').value;
-    const phone = document.getElementById('auth-phone').value;
-    
-    // Validate email
-    if (!email) {
-        alert('Email is required');
-        return;
-    }
-    
-    // Show loading state
-    button.classList.add('btn-loading');
-    button.querySelector('.loading-spinner').classList.remove('hidden');
-    button.disabled = true;
-    
-    try {
-        const response = await fetch(AUTH_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-                email: email.trim(), 
-                phone: phone.trim() 
-            })
-        });
 
-        console.log('OTP Response status:', response.status);
-        const responseData = await response.json();
-        console.log('OTP Response data:', responseData);
-
-        if (response.ok) {
-            // Show success message
-            alert('OTP sent successfully to your email');
-            document.getElementById('auth-form').classList.add('hidden');
-            document.getElementById('otp-form').classList.remove('hidden');
-            document.getElementById('modal-title').textContent = 'Enter OTP';
-            document.getElementById('auth-otp').focus();
-        } else {
-            throw new Error(responseData.error || 'Failed to send OTP');
-        }
-    } catch (error) {
-        console.error('Error sending OTP:', error);
-        alert(error.message || 'Failed to send OTP. Please try again.');
-    } finally {
-        // Remove loading state
-        button.classList.remove('btn-loading');
-        button.querySelector('.loading-spinner').classList.add('hidden');
-        button.disabled = false;
-    }
-});
-
-document.getElementById('verify-otp-btn').addEventListener('click', async (e) => {
-    e.preventDefault(); // Prevent any default form submission
-    
-    const button = document.getElementById('verify-otp-btn');
-    const email = document.getElementById('auth-email').value;
-    const otp = document.getElementById('auth-otp').value;
-    const phone = document.getElementById('auth-phone').value;
-    
-    // Validate OTP
-    if (!otp) {
-        alert('Please enter the OTP');
-        return;
-    }
-    
-    // Show loading state
-    button.classList.add('btn-loading');
-    button.querySelector('.loading-spinner').classList.remove('hidden');
-    button.disabled = true;
-    
-    try {
-        const response = await fetch(OTP_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-                email: email.trim(), 
-                otp: otp.trim(), 
-                phone: phone.trim() 
-            })
-        });
-
-        console.log('Verify OTP Response status:', response.status);
-        const responseData = await response.json();
-        console.log('Verify OTP Response data:', responseData);
-
-        if (response.ok) {
-            localStorage.setItem('isAuthenticated', 'true');
-            document.getElementById('auth-modal').classList.add('hidden');
-            
-            // Handle pending message if exists
-            const pendingMessage = localStorage.getItem('pendingMessage');
-            if (pendingMessage) {
-                localStorage.removeItem('pendingMessage');
-                sendMessage(pendingMessage);
-            }
-            
-            alert('Successfully verified!');
-        } else {
-            throw new Error(responseData.error || 'Invalid OTP');
-        }
-    } catch (error) {
-        console.error('Error verifying OTP:', error);
-        alert(error.message || 'Invalid OTP. Please try again.');
-    } finally {
-        // Remove loading state
-        button.classList.remove('btn-loading');
-        button.querySelector('.loading-spinner').classList.add('hidden');
-        button.disabled = false;
-    }
-});
 // URL parameter handling
 window.addEventListener('DOMContentLoaded', () => {
     // Get the query parameter
@@ -1064,6 +924,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Handle pending message after Google Sign-In
+window.addEventListener('load', () => {
+    const pendingMessage = localStorage.getItem('pendingMessage');
+    if (pendingMessage && isAuthenticated) {
+        localStorage.removeItem('pendingMessage');
+        setTimeout(() => {
+            document.getElementById('message-input').value = pendingMessage;
+            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+        }, 500);
+    }
+});
+
 // Escape HTML to prevent XSS
 function escapeHtml(unsafe) {
     return unsafe
@@ -1074,3 +946,5 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
    </script>
+</body>
+</html>
