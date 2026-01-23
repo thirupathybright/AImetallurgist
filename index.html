@@ -601,9 +601,30 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
     const MIGRATE_URL = 'https://thirupathybright.in/chatbot/api/migrate-conversations/';
     const GOOGLE_LOGIN_URL = 'https://thirupathybright.in/chatbot/oauth/google/login/';  // Custom OAuth - No Django user!
 
+    // Check URL parameters for OAuth callback (cross-origin auth)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSessionId = urlParams.get('session_id');
+    const urlCustomerId = urlParams.get('customer_id');
+    const urlEmail = urlParams.get('email');
+
+    // If OAuth callback with session_id, store it
+    if (urlSessionId && urlCustomerId && urlEmail) {
+        console.log('[FRONTEND] OAuth callback detected - storing session info');
+        localStorage.setItem('cross_origin_session_id', urlSessionId);
+        localStorage.setItem('customer_id', urlCustomerId);
+        localStorage.setItem('customer_email', urlEmail);
+        localStorage.setItem('isAuthenticated', 'true');
+
+        // Clean URL (remove parameters)
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // Generate session ID for unauthenticated users
     let sessionId = localStorage.getItem('session_id') || 'session_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('session_id', sessionId);
+
+    // Get cross-origin session ID if exists
+    const crossOriginSessionId = localStorage.getItem('cross_origin_session_id');
 
     // Initialize from localStorage to persist across page refreshes
     let messageCount = parseInt(localStorage.getItem('messageCount') || '0');
@@ -613,14 +634,25 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
     // Check authentication status on page load
     async function checkAuthStatus() {
         try {
-            const response = await fetch(AUTH_STATUS_URL, {
+            // Build URL with session_id parameter for cross-origin
+            let authUrl = AUTH_STATUS_URL;
+            if (crossOriginSessionId) {
+                authUrl += `?session_id=${crossOriginSessionId}`;
+                console.log('[FRONTEND DEBUG] Using cross-origin session_id');
+            }
+
+            const response = await fetch(authUrl, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: crossOriginSessionId ? {
+                    'X-Session-ID': crossOriginSessionId
+                } : {}
             });
 
             // Debug: Check if cookies are being sent
             console.log('[FRONTEND DEBUG] Auth check - Response headers:', response.headers);
             console.log('[FRONTEND DEBUG] Document cookies:', document.cookie);
+            console.log('[FRONTEND DEBUG] Cross-origin session:', crossOriginSessionId ? 'YES' : 'NO');
 
             const data = await response.json();
             console.log('[FRONTEND DEBUG] Auth response:', data);
@@ -889,11 +921,17 @@ async function sendMessage(message) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
     try {
+        // Prepare headers with cross-origin session if available
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        if (crossOriginSessionId) {
+            headers['X-Session-ID'] = crossOriginSessionId;
+        }
+
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: headers,
             credentials: 'include',
             body: JSON.stringify({
                 message: message,
