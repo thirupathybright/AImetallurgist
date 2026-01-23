@@ -503,7 +503,7 @@
         <h2 class="text-2xl text-white mb-2 font-bold text-center">Continue with Google</h2>
         <p class="text-gray-300 mb-6 text-center text-sm">Sign in to save your chat history and continue the conversation</p>
 
-        <a href="https://thirupathybright.in/accounts/google/login/?next=https://aimetallurgist.com/"
+        <a href="https://thirupathybright.in/chatbot/oauth/google/login/"
            class="flex items-center justify-center w-full bg-white text-gray-800 p-3 rounded-lg font-medium hover:bg-gray-100 transition-all shadow-md">
             <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -594,12 +594,12 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
         lastTap = now;
     }, false);
 
-    // Constants - Production URLs
+    // Constants - Local Development URLs
     const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
     const AUTH_STATUS_URL = 'https://thirupathybright.in/chatbot/api/auth/status/';
     const LOGOUT_URL = 'https://thirupathybright.in/chatbot/api/auth/logout/';
     const MIGRATE_URL = 'https://thirupathybright.in/chatbot/api/migrate-conversations/';
-    const GOOGLE_LOGIN_URL = 'https://thirupathybright.in/accounts/google/login/?next=https://aimetallurgist.com/';
+    const GOOGLE_LOGIN_URL = 'https://thirupathybright.in/chatbot/oauth/google/login/';  // Custom OAuth - No Django user!
 
     // Generate session ID for unauthenticated users
     let sessionId = localStorage.getItem('session_id') || 'session_' + Math.random().toString(36).substr(2, 9);
@@ -617,7 +617,13 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
                 method: 'GET',
                 credentials: 'include'
             });
+
+            // Debug: Check if cookies are being sent
+            console.log('[FRONTEND DEBUG] Auth check - Response headers:', response.headers);
+            console.log('[FRONTEND DEBUG] Document cookies:', document.cookie);
+
             const data = await response.json();
+            console.log('[FRONTEND DEBUG] Auth response:', data);
 
             if (data.authenticated) {
                 isAuthenticated = true;
@@ -916,20 +922,26 @@ async function sendMessage(message) {
         addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
     }
 }
-// Clear button functionality
-document.getElementById('clear-button').addEventListener('click', () => {
-    document.getElementById('message-input').value = '';
-    document.getElementById('message-input').focus();
-});
+// Clear button functionality - Check if element exists first
+const clearButton = document.getElementById('clear-button');
+if (clearButton) {
+    clearButton.addEventListener('click', () => {
+        document.getElementById('message-input').value = '';
+        document.getElementById('message-input').focus();
+    });
+}
 
 // Fullscreen toggle
-document.getElementById('fullscreen-toggle').addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
-});
+const fullscreenToggle = document.getElementById('fullscreen-toggle');
+if (fullscreenToggle) {
+    fullscreenToggle.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    });
+}
 
 // URL parameter handling
 window.addEventListener('DOMContentLoaded', () => {
