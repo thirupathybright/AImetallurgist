@@ -693,11 +693,17 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
 
     async function migrateConversations() {
         try {
+            // Prepare headers with cross-origin session if available
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            if (crossOriginSessionId) {
+                headers['X-Session-ID'] = crossOriginSessionId;
+            }
+
             await fetch(MIGRATE_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headers,
                 credentials: 'include',
                 body: JSON.stringify({ session_id: sessionId })
             });
