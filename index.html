@@ -438,12 +438,11 @@
                     <i class="fas fa-user-circle text-lg text-purple-400"></i>
                     <span id="user-email" class="text-sm font-medium"></span>
                 </div>
-                <a href="https://thirupathybright.in/accounts/logout/"
-                   onclick="localStorage.setItem('isAuthenticated', 'false'); localStorage.removeItem('customerId'); localStorage.removeItem('userEmail'); localStorage.setItem('messageCount', '0');"
+                <button onclick="handleLogout()"
                    class="flex items-center space-x-1 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
-                </a>
+                </button>
             </div>
 
             <div class="flex items-center space-x-2">
@@ -598,6 +597,7 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
     // Constants - Production URLs
     const API_URL = 'https://thirupathybright.in/chatbot/api/steel-inquiry/';
     const AUTH_STATUS_URL = 'https://thirupathybright.in/chatbot/api/auth/status/';
+    const LOGOUT_URL = 'https://thirupathybright.in/chatbot/api/auth/logout/';
     const MIGRATE_URL = 'https://thirupathybright.in/chatbot/api/migrate-conversations/';
     const GOOGLE_LOGIN_URL = 'https://thirupathybright.in/accounts/google/login/?next=https://aimetallurgist.com/';
 
@@ -677,6 +677,37 @@ document.body.insertAdjacentHTML('beforeend', authModalHTML);
             userEmailSpan.textContent = email;
             userInfoDiv.classList.remove('hidden');
             userInfoDiv.classList.add('flex');
+        }
+    }
+
+    // Handle logout - clear session and localStorage
+    async function handleLogout() {
+        try {
+            // Call backend logout endpoint to clear session
+            await fetch(LOGOUT_URL, {
+                method: 'POST',
+                credentials: 'include'  // Important: Send session cookie
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            // Clear all localStorage data
+            localStorage.clear();
+
+            // Reset variables
+            messageCount = 0;
+            isAuthenticated = false;
+            customerId = null;
+
+            // Hide user info
+            const userInfoDiv = document.getElementById('user-info');
+            if (userInfoDiv) {
+                userInfoDiv.classList.add('hidden');
+                userInfoDiv.classList.remove('flex');
+            }
+
+            // Reload the page to reset everything
+            window.location.reload();
         }
     }
 
